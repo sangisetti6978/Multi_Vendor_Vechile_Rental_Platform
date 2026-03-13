@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .test-section {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔌 Backend Connection Test</h1>
+    
+    <div class="test-card">
+        <h2>Configuration</h2>
+        <p><strong>Backend URL:</strong> <span id="backendUrl">http://localhost:8080</span></p>
+        <p><strong>Frontend:</strong> Serving from filesystem</p>
+    </div>
+
+    <div class="test-card">
+        <h2>Connection Tests</h2>
+        
+        <div class="test-section">
+            <h3>1. Backend Health Check</h3>
+            <button onclick="testBackendHealth()">Test Backend Health</button>
+            <div id="healthStatus" class="status pending">Click the button to test</div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Fetch All Vehicles (Public API)</h3>
+            <button onclick="testFetchVehicles()">Fetch Vehicles</button>
+            <div id="vehiclesStatus" class="status pending">Click the button to test</div>
+            <pre id="vehiclesData" style="display: none;"></pre>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Test Login API</h3>
+            <div style="margin: 10px 0;">
+                <input type="email" id="testEmail" placeholder="Email" value="test@example.com" style="padding: 8px; margin: 5px;">
+                <input type="password" id="testPassword" placeholder="Password" value="password" style="padding: 8px; margin: 5px;">
+            </div>
+            <button onclick="testLogin()">Test Login</button>
+            <div id="loginStatus" class="status pending">Enter credentials and click to test</div>
+            <pre id="loginData" style="display: none;"></pre>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Test Protected Endpoint (Requires Login)</h3>
+            <button onclick="testProtectedEndpoint()">Test Protected Endpoint</button>
+            <div id="protectedStatus" class="status pending">Login first, then test</div>
+            <pre id="protectedData" style="display: none;"></pre>
+        </div>
+    </div>
+
+    <div class="test-card">
+        <h2>Troubleshooting Tips</h2>
+        <ul>
+            <li>Make sure the backend server is running on <strong>http://localhost:8080</strong></li>
+            <li>Check that your Oracle database is running and configured correctly</li>
+            <li>Verify the CORS configuration in SecurityConfig.java allows your frontend origin</li>
+            <li>Check browser console (F12) for any network errors</li>
+            <li>Ensure JWT secret is properly configured in application.properties</li>
+        </ul>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        let authToken = null;
+
+        async function testBackendHealth() {
+            const statusDiv = document.getElementById('healthStatus');
+            statusDiv.className = 'status pending';
+            statusDiv.textContent = 'Testing backend connection...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/public/vehicles');
+                
+                if (response.ok) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `✅ Backend is running! Status: ${response.status}`;
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = `⚠️ Backend responded with status: ${response.status}`;
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Cannot connect to backend: ${error.message}`;
+            }
+        }
+
+        async function testFetchVehicles() {
+            const statusDiv = document.getElementById('vehiclesStatus');
+            const dataDiv = document.getElementById('vehiclesData');
+            
+            statusDiv.className = 'status pending';
+            statusDiv.textContent = 'Fetching vehicles...';
+            
+            try {
+                const vehicles = await apiCall('/api/public/vehicles', 'GET');
+                
+                if (vehicles && vehicles.length > 0) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `✅ Successfully fetched ${vehicles.length} vehicles!`;
+                    dataDiv.textContent = JSON.stringify(vehicles, null, 2);
+                    dataDiv.style.display = 'block';
+                } else {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ API works but no vehicles in database yet';
+                    dataDiv.style.display = 'none';
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Failed to fetch vehicles: ${error.message}`;
+                dataDiv.style.display = 'none';
+            }
+        }
+
+        async function testLogin() {
+            const statusDiv = document.getElementById('loginStatus');
+            const dataDiv = document.getElementById('loginData');
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+            
+            statusDiv.className = 'status pending';
+            statusDiv.textContent = 'Testing login...';
+            
+            try {
+                const response = await apiCall('/api/auth/login', 'POST', { email, password });
+                
+                if (response.token) {
+                    authToken = response.token;
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `✅ Login successful! Welcome ${response.fullName} (${response.role})`;
+                    dataDiv.textContent = JSON.stringify(response, null, 2);
+                    dataDiv.style.display = 'block';
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = '⚠️ Login response missing token';
+                    dataDiv.style.display = 'none';
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Login failed: ${error.message}`;
+                dataDiv.textContent = 'Hint: Make sure you have registered a user first, or use valid test credentials';
+                dataDiv.style.display = 'block';
+            }
+        }
+
+        async function testProtectedEndpoint() {
+            const statusDiv = document.getElementById('protectedStatus');
+            const dataDiv = document.getElementById('protectedData');
+            
+            if (!authToken) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Please login first to get an auth token';
+                return;
+            }
+            
+            statusDiv.className = 'status pending';
+            statusDiv.textContent = 'Testing protected endpoint...';
+            
+            try {
+                const response = await apiCall('/api/customer/bookings', 'GET', null, authToken);
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `✅ Protected endpoint works! Found ${response.length} bookings`;
+                dataDiv.textContent = JSON.stringify(response, null, 2);
+                dataDiv.style.display = 'block';
+            } catch (error) {
+                // This might fail if the user is not a CUSTOMER, which is expected
+                if (error.message.includes('403')) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ Authentication works (but user may not have CUSTOMER role)';
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = `❌ Protected endpoint failed: ${error.message}`;
+                }
+                dataDiv.style.display = 'none';
+            }
+        }
+
+        // Auto-test backend health on page load
+        window.addEventListener('load', () => {
+            testBackendHealth();
+        });
+    </script>
+</body>
+</html>

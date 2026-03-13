@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Vehicle Rental</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="top-navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <span class="brand-icon material-symbols-rounded">directions_car</span>
+                <span class="brand-text">Vehicle Rental</span>
+            </a>
+            <div class="nav-actions">
+                <!-- Guest buttons -->
+                <a href="login.html" class="nav-btn nav-btn-outline nav-guest"><span class="material-symbols-rounded">login</span> Login</a>
+                <a href="register.html" class="nav-btn nav-btn-primary nav-guest"><span class="material-symbols-rounded">person_add</span> Register</a>
+                <!-- Auth buttons -->
+                <a href="customer-dashboard.html" class="nav-btn nav-btn-outline nav-auth"><span class="material-symbols-rounded">dashboard</span> Dashboard</a>
+                <a href="profile.html" class="nav-profile-trigger nav-auth" id="navProfileLink">
+                    <div class="nav-avatar" id="navAvatar">?</div>
+                    <span class="nav-user-name" id="navUserName">User</span>
+                </a>
+                <button class="nav-btn nav-btn-danger nav-auth" onclick="logout()"><span class="material-symbols-rounded">logout</span> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="dash-sidebar">
+            <div class="profile-card">
+                <div class="avatar" id="userAvatar">?</div>
+                <h3 class="profile-name" id="userName">Loading...</h3>
+                <p class="profile-email" id="userEmail"></p>
+            </div>
+            <nav class="side-nav">
+                <a href="customer-dashboard.html" class="side-nav-item">
+                    <span class="material-symbols-rounded">calendar_month</span>
+                    <span>My Bookings</span>
+                </a>
+                <a href="vehicle-search.html" class="side-nav-item">
+                    <span class="material-symbols-rounded">travel_explore</span>
+                    <span>Search Vehicles</span>
+                </a>
+                <a href="profile.html" class="side-nav-item active">
+                    <span class="material-symbols-rounded">person</span>
+                    <span>My Profile</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <p>&copy; 2026 Vehicle Rental</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dash-main">
+            <div class="section-title-bar">
+                <div>
+                    <h1 class="section-heading">My Profile</h1>
+                    <p class="section-sub">View and manage your account information</p>
+                </div>
+            </div>
+
+            <!-- Profile Hero Card -->
+            <div class="profile-hero">
+                <div class="profile-hero-bg"></div>
+                <div class="profile-hero-content">
+                    <div class="profile-hero-avatar" id="profileAvatar">?</div>
+                    <div class="profile-hero-info">
+                        <h2 id="profileName">Loading...</h2>
+                        <p id="profileEmail">loading@email.com</p>
+                        <span class="profile-role-badge" id="profileRoleBadge">CUSTOMER</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Details Grid -->
+            <div class="profile-details-grid">
+                <!-- Personal Information -->
+                <div class="profile-detail-card">
+                    <div class="profile-card-header">
+                        <span class="material-symbols-rounded">person</span>
+                        <h3>Personal Information</h3>
+                    </div>
+                    <div class="profile-card-body">
+                        <div class="profile-field">
+                            <label>Full Name</label>
+                            <p id="detailName">—</p>
+                        </div>
+                        <div class="profile-field">
+                            <label>Email Address</label>
+                            <p id="detailEmail">—</p>
+                        </div>
+                        <div class="profile-field">
+                            <label>Phone Number</label>
+                            <p id="detailPhone">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Information -->
+                <div class="profile-detail-card">
+                    <div class="profile-card-header">
+                        <span class="material-symbols-rounded">shield_person</span>
+                        <h3>Account Information</h3>
+                    </div>
+                    <div class="profile-card-body">
+                        <div class="profile-field">
+                            <label>User ID</label>
+                            <p id="detailUserId">—</p>
+                        </div>
+                        <div class="profile-field">
+                            <label>Account Role</label>
+                            <p id="detailRole">—</p>
+                        </div>
+                        <div class="profile-field">
+                            <label>Account Status</label>
+                            <p id="detailStatus">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="profile-detail-card profile-actions-card">
+                    <div class="profile-card-header">
+                        <span class="material-symbols-rounded">bolt</span>
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="profile-card-body profile-quick-actions">
+                        <a href="customer-dashboard.html" class="profile-action-btn">
+                            <span class="material-symbols-rounded">calendar_month</span>
+                            <span>My Bookings</span>
+                        </a>
+                        <a href="vehicle-search.html" class="profile-action-btn">
+                            <span class="material-symbols-rounded">travel_explore</span>
+                            <span>Search Vehicles</span>
+                        </a>
+                        <button class="profile-action-btn profile-action-danger" onclick="logout()">
+                            <span class="material-symbols-rounded">logout</span>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Require authentication
+        if (!requireAuth()) {
+            throw new Error('Authentication required');
+        }
+
+        checkAuth();
+
+        // Populate profile page
+        (function loadProfile() {
+            const user = getUser();
+            if (!user) return;
+
+            const el = id => document.getElementById(id);
+
+            // Sidebar
+            if (el('userAvatar') && user.fullName) el('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
+            if (el('userName')) el('userName').textContent = user.fullName || 'User';
+            if (el('userEmail')) el('userEmail').textContent = user.email || '';
+
+            // Hero section
+            if (el('profileAvatar') && user.fullName) el('profileAvatar').textContent = user.fullName.charAt(0).toUpperCase();
+            if (el('profileName')) el('profileName').textContent = user.fullName || 'User';
+            if (el('profileEmail')) el('profileEmail').textContent = user.email || '';
+            if (el('profileRoleBadge')) {
+                const roleText = user.role || 'USER';
+                el('profileRoleBadge').textContent = roleText;
+                el('profileRoleBadge').className = 'profile-role-badge role-' + roleText.toLowerCase();
+            }
+
+            // Detail cards
+            if (el('detailName')) el('detailName').textContent = user.fullName || '—';
+            if (el('detailEmail')) el('detailEmail').textContent = user.email || '—';
+            if (el('detailPhone')) el('detailPhone').textContent = user.phone || 'Not provided';
+            if (el('detailUserId')) el('detailUserId').textContent = '#' + (user.userId || '—');
+            if (el('detailRole')) {
+                const role = user.role || 'USER';
+                el('detailRole').innerHTML = '<span class="profile-role-badge role-' + role.toLowerCase() + '">' + role + '</span>';
+            }
+            if (el('detailStatus')) {
+                el('detailStatus').innerHTML = '<span class="status-badge status-active"><span class="material-symbols-rounded">check_circle</span> Active</span>';
+            }
+        })();
+    </script>
+</body>
+</html>

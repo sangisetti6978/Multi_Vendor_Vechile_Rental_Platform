@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Vehicle Rental Platform</title>
+    <script>
+        // Redirect to role selection
+        const params = new URLSearchParams(window.location.search);
+        const role = params.get('role');
+        if (role === 'admin') {
+            // Admin login stays here
+        } else {
+            window.location.href = 'choose-role.html';
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <div class="auth-wrapper">
+        <div class="auth-header">
+            <a href="index.html" class="back-home">
+                <span class="back-arrow">←</span> Back to Home
+            </a>
+            <div class="logo-large">
+                <span class="logo-icon">🚗</span>
+                <h1>Vehicle Rental</h1>
+            </div>
+        </div>
+
+        <div class="auth-form-container">
+            <div class="auth-card" style="border-top: 4px solid #9b59b6;">
+                <div class="auth-card-header">
+                    <span class="role-badge" style="background: rgba(155, 89, 182, 0.2); color: #9b59b6;">
+                        <span>👨‍💼</span> Admin Portal
+                    </span>
+                    <h2>Admin Login</h2>
+                    <p>Access the admin dashboard</p>
+                </div>
+
+                <form class="auth-form" id="loginForm">
+                    <div id="error-message" class="error-msg"></div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input type="email" id="email" name="email" placeholder="Enter admin email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="password" name="password" placeholder="Enter password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: #fff;" id="submitBtn">
+                        Sign In as Admin
+                    </button>
+                </form>
+
+                <div class="auth-links">
+                    <p><a href="choose-role.html" style="color: #9b59b6;">← Back to role selection</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            errorDiv.classList.remove('show');
+            submitBtn.classList.add('btn-loading');
+            submitBtn.textContent = 'Signing in...';
+            
+            try {
+                const response = await apiCall('/api/auth/login', 'POST', { email, password });
+                
+                if (response.role !== 'ADMIN') {
+                    throw new Error('This login is for admins only.');
+                }
+                
+                localStorage.setItem('token', response.token);
+                localStorage.setItem('user', JSON.stringify(response));
+                
+                window.location.href = 'admin-dashboard.html';
+            } catch (error) {
+                errorDiv.textContent = error.message || 'Login failed. Please check your credentials.';
+                errorDiv.classList.add('show');
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.textContent = 'Sign In as Admin';
+            }
+        });
+    </script>
+</body>
+</html>

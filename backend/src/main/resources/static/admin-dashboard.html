@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Vehicle Rental</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h2>🚗 Vehicle Rental - Admin</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="admin-dashboard.html">Dashboard</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="user-info">
+                <h3 id="userName">Admin</h3>
+                <p id="userEmail"></p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" onclick="showSection('users')" class="active">Users</a></li>
+                <li><a href="#" onclick="showSection('shops')">Shops</a></li>
+                <li><a href="#" onclick="showSection('vehicles')">Vehicles</a></li>
+                <li><a href="#" onclick="showSection('verify')">Verify Owners</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <div id="usersSection">
+                <h2>All Users</h2>
+                <div id="usersList" class="table-container">
+                    <p>Loading users...</p>
+                </div>
+            </div>
+
+            <div id="shopsSection" style="display: none;">
+                <h2>All Shops</h2>
+                <div id="shopsList" class="cards-grid">
+                    <p>Loading shops...</p>
+                </div>
+            </div>
+
+            <div id="vehiclesSection" style="display: none;">
+                <h2>All Vehicles</h2>
+                <div id="vehiclesList" class="cards-grid">
+                    <p>Loading vehicles...</p>
+                </div>
+            </div>
+
+            <div id="verifySection" style="display: none;">
+                <h2>Unverified Owners</h2>
+                <div id="unverifiedList" class="table-container">
+                    <p>Loading unverified owners...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

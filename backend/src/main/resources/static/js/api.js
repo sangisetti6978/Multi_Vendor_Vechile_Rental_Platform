@@ -1,5 +1,5 @@
 // API Configuration — uses current hostname so it works from any device
-const API_BASE_URL = window.location.origin; // Uses same domain automatically
+const API_BASE_URL = `http://${window.location.hostname || 'localhost'}:8888`;
 
 // Resolve vehicle image URL — handles server-relative paths, full URLs, and missing images
 function resolveVehicleImg(url, fallbackName) {

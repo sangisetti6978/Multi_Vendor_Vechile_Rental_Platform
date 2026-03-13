@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration - Vehicle Rental Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <div class="auth-wrapper">
+        <div class="auth-header">
+            <a href="choose-role.html?action=register" class="back-home">
+                <span class="back-arrow">←</span> Change Role
+            </a>
+            <div class="logo-large">
+                <span class="logo-icon">🚗</span>
+                <h1>Vehicle Rental</h1>
+            </div>
+        </div>
+
+        <div class="auth-form-container">
+            <div class="auth-card customer-theme">
+                <div class="auth-card-header">
+                    <span class="role-badge customer">
+                        <span>🧑‍💼</span> Customer Registration
+                    </span>
+                    <h2>Create Your Account</h2>
+                    <p>Join thousands of happy customers</p>
+                </div>
+
+                <form class="auth-form" id="registerForm">
+                    <div id="error-message" class="error-msg"></div>
+                    
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📱</span>
+                            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="password" name="password" placeholder="Create a strong password" required minlength="6">
+                            <button type="button" class="password-toggle" onclick="togglePassword()">👁</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔐</span>
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn customer-btn" id="submitBtn">
+                        Create Account
+                    </button>
+                </form>
+
+                <div class="auth-links">
+                    <p>Already have an account? <a href="login-customer.html">Sign In</a></p>
+                    <div class="switch-role">
+                        <a href="register-owner.html">Register as Vehicle Owner instead</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggle = document.querySelector('.password-toggle');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggle.textContent = '👁';
+            }
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('error-message');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            errorDiv.classList.remove('show');
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match!';
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            submitBtn.classList.add('btn-loading');
+            submitBtn.textContent = 'Creating Account...';
+            
+            try {
+                const response = await apiCall('/api/auth/register', 'POST', {
+                    fullName,
+                    email,
+                    phone,
+                    password,
+                    role: 'CUSTOMER'
+                });
+                
+                localStorage.setItem('token', response.token);
+                localStorage.setItem('user', JSON.stringify(response));
+                
+                window.location.href = 'customer-dashboard.html';
+            } catch (error) {
+                errorDiv.textContent = error.message || 'Registration failed. Please try again.';
+                errorDiv.classList.add('show');
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.textContent = 'Create Account';
+            }
+        });
+    </script>
+</body>
+</html>

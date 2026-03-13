@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Details - Vehicle Rental</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        /* ===== VEHICLE DETAILS — PRO UI ===== */
+        :root {
+            --vd-primary: #4361ee;
+            --vd-primary-dark: #3a56d4;
+            --vd-primary-light: #eef1ff;
+            --vd-success: #10b981;
+            --vd-success-bg: #ecfdf5;
+            --vd-danger: #ef4444;
+            --vd-danger-bg: #fef2f2;
+            --vd-warning: #f59e0b;
+            --vd-gray-50: #f8fafc;
+            --vd-gray-100: #f1f5f9;
+            --vd-gray-200: #e2e8f0;
+            --vd-gray-300: #cbd5e1;
+            --vd-gray-400: #94a3b8;
+            --vd-gray-500: #64748b;
+            --vd-gray-600: #475569;
+            --vd-gray-700: #334155;
+            --vd-gray-800: #1e293b;
+            --vd-gray-900: #0f172a;
+            --vd-radius: 16px;
+            --vd-radius-sm: 10px;
+            --vd-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+            --vd-shadow-lg: 0 8px 30px rgba(0,0,0,.1);
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--vd-gray-50); color: var(--vd-gray-800); }
+
+        /* ---- Top Nav ---- */
+        .vd-nav {
+            background: var(--vd-gray-900);
+            padding: .85rem 0;
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,.25);
+        }
+        .vd-nav .container { display:flex; align-items:center; justify-content:space-between; }
+        .vd-nav-brand { display:flex; align-items:center; gap:.6rem; text-decoration:none; }
+        .vd-nav-brand span.icon { font-size:1.6rem; }
+        .vd-nav-brand span.text { font-size:1.15rem; font-weight:700; color:#fff; letter-spacing:-.02em; }
+        .vd-nav-back { display:inline-flex; align-items:center; gap:.4rem; color:var(--vd-gray-300); text-decoration:none; font-size:.88rem; font-weight:500; padding:.45rem .9rem; border-radius:8px; border:1px solid rgba(255,255,255,.12); transition:all .2s; }
+        .vd-nav-back:hover { background:rgba(255,255,255,.08); color:#fff; }
+
+        /* ---- Breadcrumb ---- */
+        .vd-breadcrumb { padding:.9rem 0; }
+        .vd-breadcrumb ol { list-style:none; display:flex; align-items:center; gap:.4rem; margin:0; padding:0; font-size:.82rem; color:var(--vd-gray-400); }
+        .vd-breadcrumb a { color:var(--vd-primary); text-decoration:none; font-weight:500; }
+        .vd-breadcrumb a:hover { text-decoration:underline; }
+        .vd-breadcrumb .sep { color:var(--vd-gray-300); }
+
+        /* ---- Main Layout ---- */
+        .vd-layout { display:grid; grid-template-columns:1fr 380px; gap:1.75rem; padding-bottom:4rem; }
+
+        /* ---- Image Gallery ---- */
+        .vd-gallery { border-radius:var(--vd-radius); overflow:hidden; background:#fff; box-shadow:var(--vd-shadow); position:relative; }
+        .vd-gallery img { width:100%; height:420px; object-fit:cover; display:block; }
+        .vd-gallery-badges { position:absolute; top:1rem; left:1rem; display:flex; gap:.5rem; }
+        .vd-badge { display:inline-flex; align-items:center; gap:.3rem; padding:.35rem .75rem; border-radius:20px; font-size:.75rem; font-weight:600; backdrop-filter:blur(8px); }
+        .vd-badge-available { background:rgba(16,185,129,.9); color:#fff; }
+        .vd-badge-unavailable { background:rgba(239,68,68,.85); color:#fff; }
+        .vd-badge-type { background:rgba(255,255,255,.92); color:var(--vd-gray-700); box-shadow:0 1px 4px rgba(0,0,0,.1); }
+
+        /* ---- Info Section ---- */
+        .vd-info { padding:1.75rem 2rem; }
+        .vd-title-row { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:.25rem; }
+        .vd-title { font-size:1.65rem; font-weight:800; color:var(--vd-gray-900); line-height:1.2; letter-spacing:-.03em; }
+        .vd-rating-chip { display:inline-flex; align-items:center; gap:.3rem; background:var(--vd-warning); color:#fff; font-size:.82rem; font-weight:700; padding:.3rem .7rem; border-radius:8px; white-space:nowrap; }
+        .vd-rating-chip .material-icons-round { font-size:1rem; }
+        .vd-subtitle { font-size:.95rem; color:var(--vd-gray-500); font-weight:500; margin-bottom:1.25rem; }
+
+        /* Specs Grid */
+        .vd-specs { display:grid; grid-template-columns:repeat(2,1fr); gap:.75rem; margin-bottom:1.5rem; }
+        .vd-spec { display:flex; align-items:center; gap:.65rem; background:var(--vd-gray-50); border:1px solid var(--vd-gray-200); border-radius:var(--vd-radius-sm); padding:.7rem .9rem; }
+        .vd-spec-icon { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+        .vd-spec-icon.fuel { background:#fef3c7; color:#d97706; }
+        .vd-spec-icon.gear { background:#ede9fe; color:#7c3aed; }
+        .vd-spec-icon.seat { background:#dbeafe; color:#2563eb; }
+        .vd-spec-icon.type { background:#fce7f3; color:#db2777; }
+        .vd-spec-text { display:flex; flex-direction:column; }
+        .vd-spec-label { font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color:var(--vd-gray-400); font-weight:600; }
+        .vd-spec-value { font-size:.88rem; font-weight:600; color:var(--vd-gray-800); }
+
+        /* Location Card */
+        .vd-location { display:flex; align-items:flex-start; gap:.7rem; background:var(--vd-primary-light); border:1px solid rgba(67,97,238,.15); border-radius:var(--vd-radius-sm); padding:.85rem 1rem; margin-bottom:1.25rem; }
+        .vd-location-icon { width:36px; height:36px; border-radius:8px; background:var(--vd-primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+        .vd-location-text { flex:1; }
+        .vd-location-text .shop { font-size:.88rem; font-weight:700; color:var(--vd-gray-800); }
+        .vd-location-text .addr { font-size:.82rem; color:var(--vd-gray-500); margin-top:.15rem; }
+
+        /* Owner Contact */
+        .vd-owner { display:flex; align-items:center; gap:.7rem; padding:.65rem 0; margin-bottom:.5rem; }
+        .vd-owner-avatar { width:38px; height:38px; border-radius:50%; background:var(--vd-gray-200); display:flex; align-items:center; justify-content:center; font-size:.95rem; font-weight:700; color:var(--vd-gray-600); }
+        .vd-owner-info .name { font-size:.85rem; font-weight:600; color:var(--vd-gray-700); }
+        .vd-owner-info .phone { font-size:.8rem; color:var(--vd-primary); }
+        .vd-owner-info .phone a { color:inherit; text-decoration:none; }
+        .vd-owner-info .phone a:hover { text-decoration:underline; }
+
+        /* Description */
+        .vd-desc { margin-top:.5rem; }
+        .vd-desc-title { font-size:.82rem; text-transform:uppercase; letter-spacing:.05em; font-weight:700; color:var(--vd-gray-400); margin-bottom:.5rem; }
+        .vd-desc-body { font-size:.9rem; color:var(--vd-gray-600); line-height:1.7; }
+
+        /* ---- Sidebar (Booking) ---- */
+        .vd-sidebar { display:flex; flex-direction:column; }
+        .vd-booking-card { background:#fff; border-radius:var(--vd-radius); box-shadow:var(--vd-shadow); padding:1.75rem; position:sticky; top:80px; }
+        .vd-price-row { display:flex; align-items:baseline; gap:.4rem; margin-bottom:1.5rem; }
+        .vd-price { font-size:2rem; font-weight:800; color:var(--vd-gray-900); letter-spacing:-.03em; }
+        .vd-price-unit { font-size:.9rem; color:var(--vd-gray-400); font-weight:500; }
+
+        .vd-form-group { margin-bottom:1.1rem; }
+        .vd-form-group label { display:block; font-size:.78rem; font-weight:600; color:var(--vd-gray-500); text-transform:uppercase; letter-spacing:.04em; margin-bottom:.4rem; }
+        .vd-form-group input,
+        .vd-form-group textarea {
+            width:100%; padding:.7rem .85rem; font-size:.88rem; font-family:inherit;
+            border:1.5px solid var(--vd-gray-200); border-radius:var(--vd-radius-sm);
+            background:var(--vd-gray-50); color:var(--vd-gray-800); transition:border .2s;
+        }
+        .vd-form-group input:focus, .vd-form-group textarea:focus {
+            outline:none; border-color:var(--vd-primary); background:#fff;
+            box-shadow:0 0 0 3px rgba(67,97,238,.1);
+        }
+        .vd-form-group textarea { resize:vertical; min-height:70px; }
+
+        .vd-cost-summary { background:var(--vd-gray-50); border-radius:var(--vd-radius-sm); padding:1rem; margin-bottom:1.25rem; }
+        .vd-cost-row { display:flex; justify-content:space-between; font-size:.85rem; color:var(--vd-gray-500); margin-bottom:.35rem; }
+        .vd-cost-row.total { border-top:1.5px solid var(--vd-gray-200); padding-top:.6rem; margin-top:.6rem; font-weight:700; font-size:.95rem; color:var(--vd-gray-900); }
+
+        .vd-book-btn {
+            width:100%; padding:.85rem; font-size:1rem; font-weight:700; font-family:inherit;
+            border:none; border-radius:var(--vd-radius-sm); cursor:pointer;
+            background:linear-gradient(135deg,var(--vd-primary) 0%,#7c3aed 100%);
+            color:#fff; transition:all .25s; box-shadow:0 4px 14px rgba(67,97,238,.35);
+        }
+        .vd-book-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(67,97,238,.45); }
+        .vd-book-btn:active { transform:translateY(0); }
+        .vd-book-btn:disabled { opacity:.55; cursor:not-allowed; transform:none; }
+
+        .vd-login-prompt { text-align:center; padding:1rem 0; }
+        .vd-login-prompt p { font-size:.88rem; color:var(--vd-gray-500); margin-bottom:.75rem; }
+        .vd-login-link {
+            display:inline-flex; align-items:center; gap:.4rem; padding:.6rem 1.5rem;
+            border:2px solid var(--vd-primary); color:var(--vd-primary); border-radius:var(--vd-radius-sm);
+            text-decoration:none; font-weight:600; font-size:.88rem; transition:all .2s;
+        }
+        .vd-login-link:hover { background:var(--vd-primary); color:#fff; }
+
+        /* ---- Reviews Section ---- */
+        .vd-reviews { grid-column:1/-1; margin-top:.5rem; }
+        .vd-reviews-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+        .vd-reviews-title { font-size:1.15rem; font-weight:700; color:var(--vd-gray-900); display:flex; align-items:center; gap:.5rem; }
+        .vd-reviews-count { font-size:.82rem; color:var(--vd-gray-400); font-weight:500; }
+        .vd-reviews-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; }
+        .vd-review {
+            background:#fff; border-radius:var(--vd-radius); padding:1.25rem 1.5rem;
+            box-shadow:var(--vd-shadow); border:1px solid var(--vd-gray-100);
+        }
+        .vd-review-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:.6rem; }
+        .vd-review-stars { display:flex; gap:.1rem; color:var(--vd-warning); font-size:1rem; }
+        .vd-review-date { font-size:.78rem; color:var(--vd-gray-400); }
+        .vd-review-body { font-size:.88rem; color:var(--vd-gray-600); line-height:1.65; }
+        .vd-no-reviews { text-align:center; padding:2.5rem 1rem; color:var(--vd-gray-400); }
+        .vd-no-reviews .material-icons-round { font-size:2.5rem; margin-bottom:.5rem; display:block; }
+
+        /* Skeleton loader */
+        .vd-skeleton { animation: vd-pulse 1.5s ease-in-out infinite; background:linear-gradient(90deg,var(--vd-gray-100) 25%,var(--vd-gray-200) 50%,var(--vd-gray-100) 75%); background-size:200% 100%; border-radius:var(--vd-radius); }
+        @keyframes vd-pulse { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .vd-skeleton-img { width:100%; height:420px; }
+        .vd-skeleton-line { height:16px; margin-bottom:10px; border-radius:6px; }
+        .vd-skeleton-line.w60 { width:60%; }
+        .vd-skeleton-line.w40 { width:40%; }
+        .vd-skeleton-line.w80 { width:80%; }
+
+        /* ---- Responsive ---- */
+        @media(max-width:900px) {
+            .vd-layout { grid-template-columns:1fr; }
+            .vd-booking-card { position:static; }
+            .vd-reviews { grid-column:1; }
+        }
+        @media(max-width:600px) {
+            .vd-gallery img { height:260px; }
+            .vd-info { padding:1.25rem 1.25rem; }
+            .vd-specs { grid-template-columns:1fr; }
+            .vd-title { font-size:1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="vd-nav">
+        <div class="container">
+            <a href="index.html" class="vd-nav-brand">
+                <span class="icon">🚗</span>
+                <span class="text">Vehicle Rental</span>
+            </a>
+            <a href="vehicle-search.html" class="vd-nav-back">
+                <span class="material-icons-round" style="font-size:1.1rem">arrow_back</span>
+                Back to Search
+            </a>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="container">
+        <div class="vd-breadcrumb">
+            <ol>
+                <li><a href="index.html">Home</a></li>
+                <li class="sep">/</li>
+                <li><a href="vehicle-search.html">Search</a></li>
+                <li class="sep">/</li>
+                <li id="breadcrumbName" style="color:var(--vd-gray-600);font-weight:600;">Vehicle Details</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="vd-layout">
+
+            <!-- Left Column -->
+            <div class="vd-left">
+                <div id="vehicleDetails">
+                    <!-- Skeleton Loader -->
+                    <div class="vd-gallery"><div class="vd-skeleton vd-skeleton-img"></div></div>
+                    <div style="padding:1.75rem 0;">
+                        <div class="vd-skeleton vd-skeleton-line w60"></div>
+                        <div class="vd-skeleton vd-skeleton-line w40"></div>
+                        <div class="vd-skeleton vd-skeleton-line w80"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="vd-sidebar">
+                <div id="bookingSidebar">
+                    <div class="vd-booking-card">
+                        <div class="vd-skeleton vd-skeleton-line w40" style="height:28px;margin-bottom:1.5rem;"></div>
+                        <div class="vd-skeleton vd-skeleton-line" style="height:42px;margin-bottom:.8rem;"></div>
+                        <div class="vd-skeleton vd-skeleton-line" style="height:42px;margin-bottom:.8rem;"></div>
+                        <div class="vd-skeleton vd-skeleton-line" style="height:46px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews -->
+            <div class="vd-reviews" id="reviewsSection">
+                <div class="vd-reviews-header">
+                    <div class="vd-reviews-title">
+                        <span class="material-icons-round">rate_review</span> Customer Reviews
+                    </div>
+                </div>
+                <div id="reviewsList">
+                    <div class="vd-no-reviews">
+                        <span class="material-icons-round">hourglass_empty</span>
+                        Loading reviews...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const vehicleId = urlParams.get('id');
+
+        if (!vehicleId) {
+            window.location.href = 'vehicle-search.html';
+        }
+
+        let vehicleData = null;
+
+        loadVehicleDetails();
+        loadReviews();
+
+        /* ---- Vehicle Details ---- */
+        async function loadVehicleDetails() {
+            try {
+                const v = await apiCall(`/api/public/vehicles/${vehicleId}`, 'GET');
+                vehicleData = v;
+
+                document.getElementById('breadcrumbName').textContent = v.vehicleName;
+                document.title = `${v.vehicleName} — Vehicle Rental`;
+
+                const availBadge = v.isAvailable
+                    ? '<span class="vd-badge vd-badge-available"><span class="material-icons-round" style="font-size:.9rem">check_circle</span> Available</span>'
+                    : '<span class="vd-badge vd-badge-unavailable"><span class="material-icons-round" style="font-size:.9rem">cancel</span> Unavailable</span>';
+
+                document.getElementById('vehicleDetails').innerHTML = `
+                    <div class="vd-gallery">
+                        <img src="${resolveVehicleImg(v.imageUrl, v.vehicleName)}" alt="${v.vehicleName}">
+                        <div class="vd-gallery-badges">
+                            ${availBadge}
+                            ${v.vehicleType ? `<span class="vd-badge vd-badge-type">${v.vehicleType}</span>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="vd-info">
+                        <div class="vd-title-row">
+                            <h1 class="vd-title">${v.vehicleName}</h1>
+                            <span class="vd-rating-chip">
+                                <span class="material-icons-round">star</span>
+                                ${v.averageRating?.toFixed(1) || '0.0'}
+                            </span>
+                        </div>
+                        <p class="vd-subtitle">${v.brand || ''} ${v.model || ''}</p>
+
+                        <!-- Specs Grid -->
+                        <div class="vd-specs">
+                            <div class="vd-spec">
+                                <div class="vd-spec-icon fuel">⛽</div>
+                                <div class="vd-spec-text">
+                                    <span class="vd-spec-label">Fuel Type</span>
+                                    <span class="vd-spec-value">${v.fuelType || '—'}</span>
+                                </div>
+                            </div>
+                            <div class="vd-spec">
+                                <div class="vd-spec-icon gear">⚙️</div>
+                                <div class="vd-spec-text">
+                                    <span class="vd-spec-label">Transmission</span>
+                                    <span class="vd-spec-value">${v.transmission || '—'}</span>
+                                </div>
+                            </div>
+                            <div class="vd-spec">
+                                <div class="vd-spec-icon seat">💺</div>
+                                <div class="vd-spec-text">
+                                    <span class="vd-spec-label">Seating</span>
+                                    <span class="vd-spec-value">${v.seatingCapacity || '—'} seats</span>
+                                </div>
+                            </div>
+                            <div class="vd-spec">
+                                <div class="vd-spec-icon type">🚘</div>
+                                <div class="vd-spec-text">
+                                    <span class="vd-spec-label">Vehicle Type</span>
+                                    <span class="vd-spec-value">${v.vehicleType || '—'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="vd-location">
+                            <div class="vd-location-icon">
+                                <span class="material-icons-round" style="font-size:1.15rem">location_on</span>
+                            </div>
+                            <div class="vd-location-text">
+                                <div class="shop">${v.shopName || 'Shop'}</div>
+                                <div class="addr">${[v.address, v.area, v.city, v.state].filter(Boolean).join(', ')}</div>
+                            </div>
+                        </div>
+
+                        <!-- Owner -->
+                        ${v.ownerName || v.ownerPhone ? `
+                        <div class="vd-owner">
+                            <div class="vd-owner-avatar">${(v.ownerName || 'O').charAt(0).toUpperCase()}</div>
+                            <div class="vd-owner-info">
+                                <div class="name">${v.ownerName || 'Vehicle Owner'}</div>
+                                ${v.ownerPhone ? `<div class="phone"><a href="tel:${v.ownerPhone}">${v.ownerPhone}</a></div>` : ''}
+                            </div>
+                        </div>` : ''}
+
+                        <!-- Description -->
+                        ${v.description ? `
+                        <div class="vd-desc">
+                            <div class="vd-desc-title">Description</div>
+                            <p class="vd-desc-body">${v.description}</p>
+                        </div>` : ''}
+                    </div>
+                `;
+
+                renderBookingSidebar(v);
+            } catch (error) {
+                document.getElementById('vehicleDetails').innerHTML = `
+                    <div style="text-align:center;padding:4rem 2rem;background:#fff;border-radius:var(--vd-radius);">
+                        <span class="material-icons-round" style="font-size:3rem;color:var(--vd-danger);display:block;margin-bottom:.75rem;">error_outline</span>
+                        <p style="font-size:1.05rem;font-weight:600;color:var(--vd-gray-700);">Failed to load vehicle details</p>
+                        <p style="color:var(--vd-gray-400);font-size:.88rem;margin-top:.3rem;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        /* ---- Booking Sidebar ---- */
+        function renderBookingSidebar(v) {
+            const token = localStorage.getItem('token');
+            const user = token ? JSON.parse(localStorage.getItem('user') || '{}') : null;
+            const isCustomer = user && user.role === 'CUSTOMER';
+
+            let inner = `
+                <div class="vd-booking-card">
+                    <div class="vd-price-row">
+                        <span class="vd-price">₹${v.pricePerDay}</span>
+                        <span class="vd-price-unit">/ day</span>
+                    </div>
+            `;
+
+            if (v.isAvailable && isCustomer) {
+                inner += `
+                    <form id="createBookingForm">
+                        <div class="vd-form-group">
+                            <label>Pick-up date & time</label>
+                            <input type="datetime-local" name="startTime" required>
+                        </div>
+                        <div class="vd-form-group">
+                            <label>Drop-off date & time</label>
+                            <input type="datetime-local" name="endTime" required>
+                        </div>
+                        <div id="costPreview"></div>
+                        <div class="vd-form-group">
+                            <label>Notes (optional)</label>
+                            <textarea name="notes" placeholder="Special requests, pick-up instructions..."></textarea>
+                        </div>
+                        <button type="submit" class="vd-book-btn" id="bookBtn">
+                            Confirm Booking
+                        </button>
+                    </form>
+                `;
+            } else if (!v.isAvailable) {
+                inner += `
+                    <div style="text-align:center;padding:1rem 0;">
+                        <span class="material-icons-round" style="font-size:2.5rem;color:var(--vd-danger);display:block;margin-bottom:.5rem;">event_busy</span>
+                        <p style="font-weight:600;color:var(--vd-gray-700);">Currently Unavailable</p>
+                        <p style="font-size:.85rem;color:var(--vd-gray-400);margin-top:.25rem;">This vehicle is not available for booking right now.</p>
+                    </div>
+                `;
+            } else {
+                inner += `
+                    <div class="vd-login-prompt">
+                        <p>Sign in as a customer to book this vehicle</p>
+                        <a href="login-customer.html" class="vd-login-link">
+                            <span class="material-icons-round" style="font-size:1.1rem">login</span>
+                            Sign In to Book
+                        </a>
+                    </div>
+                `;
+            }
+
+            inner += '</div>';
+            document.getElementById('bookingSidebar').innerHTML = inner;
+
+            /* Cost calculator */
+            if (v.isAvailable && isCustomer) {
+                const startInput = document.querySelector('[name="startTime"]');
+                const endInput = document.querySelector('[name="endTime"]');
+                const calcCost = () => {
+                    const s = new Date(startInput.value), e = new Date(endInput.value);
+                    if (startInput.value && endInput.value && e > s) {
+                        const hours = Math.ceil((e - s) / 3600000);
+                        const days = Math.ceil(hours / 24);
+                        const total = days * v.pricePerDay;
+                        document.getElementById('costPreview').innerHTML = `
+                            <div class="vd-cost-summary">
+                                <div class="vd-cost-row"><span>₹${v.pricePerDay} × ${days} day${days>1?'s':''}</span><span>₹${total.toFixed(2)}</span></div>
+                                <div class="vd-cost-row total"><span>Total</span><span>₹${total.toFixed(2)}</span></div>
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById('costPreview').innerHTML = '';
+                    }
+                };
+                startInput.addEventListener('change', calcCost);
+                endInput.addEventListener('change', calcCost);
+
+                /* Set min datetime to now */
+                const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                const minDT = now.toISOString().slice(0,16);
+                startInput.min = minDT;
+                endInput.min = minDT;
+
+                document.getElementById('createBookingForm').addEventListener('submit', handleBooking);
+            }
+        }
+
+        /* ---- Submit Booking ---- */
+        async function handleBooking(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = 'login-customer.html'; return; }
+
+            const btn = document.getElementById('bookBtn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            const fd = new FormData(e.target);
+            const booking = {
+                vehicleId: parseInt(vehicleId),
+                startTime: fd.get('startTime'),
+                endTime: fd.get('endTime'),
+                notes: fd.get('notes')
+            };
+
+            try {
+                await apiCall('/api/customer/bookings', 'POST', booking, token);
+                /* Success toast-style redirect */
+                btn.style.background = 'var(--vd-success)';
+                btn.textContent = '✓ Booked Successfully!';
+                setTimeout(() => { window.location.href = 'customer-dashboard.html'; }, 1200);
+            } catch (error) {
+                btn.disabled = false;
+                btn.textContent = 'Confirm Booking';
+                btn.style.background = '';
+                alert(error.message || 'Booking failed. Please try again.');
+            }
+        }
+
+        /* ---- Reviews ---- */
+        async function loadReviews() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    document.getElementById('reviewsList').innerHTML = `
+                        <div class="vd-no-reviews">
+                            <span class="material-icons-round">lock</span>
+                            <p style="font-weight:600;">Sign in to view reviews</p>
+                        </div>`;
+                    return;
+                }
+
+                const reviews = await apiCall(`/api/customer/vehicles/${vehicleId}/reviews`, 'GET', null, token);
+
+                if (!reviews || reviews.length === 0) {
+                    document.getElementById('reviewsList').innerHTML = `
+                        <div class="vd-no-reviews">
+                            <span class="material-icons-round">chat_bubble_outline</span>
+                            <p style="font-weight:600;">No reviews yet</p>
+                            <p style="font-size:.82rem;margin-top:.25rem;">Be the first to review this vehicle!</p>
+                        </div>`;
+                    return;
+                }
+
+                document.querySelector('.vd-reviews-title').innerHTML += ` <span class="vd-reviews-count">(${reviews.length})</span>`;
+
+                document.getElementById('reviewsList').innerHTML = `
+                    <div class="vd-reviews-grid">
+                        ${reviews.map(r => `
+                            <div class="vd-review">
+                                <div class="vd-review-top">
+                                    <div class="vd-review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                                    <div class="vd-review-date">${new Date(r.createdAt).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'})}</div>
+                                </div>
+                                <p class="vd-review-body">${r.comment || '<em>No comment</em>'}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Failed to load reviews:', error);
+                document.getElementById('reviewsList').innerHTML = `
+                    <div class="vd-no-reviews">
+                        <span class="material-icons-round">chat_bubble_outline</span>
+                        <p style="font-weight:600;">No reviews yet</p>
+                    </div>`;
+            }
+        }
+    </script>
+</body>
+</html>

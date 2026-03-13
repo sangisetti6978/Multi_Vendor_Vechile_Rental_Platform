@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Role - Vehicle Rental Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="auth-wrapper">
+        <div class="auth-header">
+            <a href="index.html" class="back-home">
+                <span class="back-arrow">←</span> Back to Home
+            </a>
+            <div class="logo-large">
+                <span class="logo-icon">🚗</span>
+                <h1>Vehicle Rental</h1>
+            </div>
+        </div>
+
+        <div class="role-selection">
+            <h2>How would you like to continue?</h2>
+            <p class="subtitle">Choose your role to get started</p>
+
+            <div class="role-cards">
+                <div class="role-card customer-card" onclick="selectRole('customer')">
+                    <div class="role-icon">
+                        <span>🧑‍💼</span>
+                    </div>
+                    <h3>Customer</h3>
+                    <p>Find and book your perfect vehicle for any occasion</p>
+                    <ul class="role-features">
+                        <li>✓ Browse thousands of vehicles</li>
+                        <li>✓ Easy online booking</li>
+                        <li>✓ Secure payments</li>
+                        <li>✓ 24/7 support</li>
+                    </ul>
+                    <div class="role-btn">
+                        <span>Continue as Customer</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+
+                <div class="role-card owner-card" onclick="selectRole('owner')">
+                    <div class="role-icon">
+                        <span>🏪</span>
+                    </div>
+                    <h3>Vehicle Owner</h3>
+                    <p>List your vehicles and start earning today</p>
+                    <ul class="role-features">
+                        <li>✓ Create multiple shops</li>
+                        <li>✓ Manage your fleet</li>
+                        <li>✓ Track bookings & earnings</li>
+                        <li>✓ Business analytics</li>
+                    </ul>
+                    <div class="role-btn owner-btn">
+                        <span>Continue as Owner</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="admin-link">
+                Are you an admin? <a href="login.html?role=admin">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function selectRole(role) {
+            const params = new URLSearchParams(window.location.search);
+            const action = params.get('action') || 'login';
+            
+            if (action === 'register') {
+                window.location.href = `register-${role}.html`;
+            } else {
+                window.location.href = `login-${role}.html`;
+            }
+        }
+    </script>
+</body>
+</html>

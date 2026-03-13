@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Vehicles - Vehicle Rental</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/search.css">
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="top-navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-brand">
+                <span class="brand-icon material-symbols-rounded">directions_car</span>
+                <span class="brand-text">Vehicle Rental</span>
+            </a>
+            <div class="nav-actions">
+                <!-- Guest buttons -->
+                <a href="login.html" class="nav-btn nav-btn-outline nav-guest"><span class="material-symbols-rounded">login</span> Login</a>
+                <a href="register.html" class="nav-btn nav-btn-primary nav-guest"><span class="material-symbols-rounded">person_add</span> Register</a>
+                <!-- Auth buttons -->
+                <a href="customer-dashboard.html" class="nav-btn nav-btn-outline nav-auth"><span class="material-symbols-rounded">dashboard</span> Dashboard</a>
+                <a href="profile.html" class="nav-profile-trigger nav-auth" id="navProfileLink">
+                    <div class="nav-avatar" id="navAvatar">?</div>
+                    <span class="nav-user-name" id="navUserName">User</span>
+                </a>
+                <button class="nav-btn nav-btn-danger nav-auth" onclick="logout()"><span class="material-symbols-rounded">logout</span> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar (matching dashboard) -->
+        <aside class="dash-sidebar">
+            <div class="profile-card">
+                <div class="avatar" id="userAvatar">?</div>
+                <h3 class="profile-name" id="userName">Guest</h3>
+                <p class="profile-email" id="userEmail">Login to book vehicles</p>
+            </div>
+            <nav class="side-nav">
+                <a href="customer-dashboard.html" class="side-nav-item">
+                    <span class="material-symbols-rounded">calendar_month</span>
+                    <span>My Bookings</span>
+                </a>
+                <a href="vehicle-search.html" class="side-nav-item active">
+                    <span class="material-symbols-rounded">travel_explore</span>
+                    <span>Search Vehicles</span>
+                </a>
+                <a href="#" class="side-nav-item">
+                    <span class="material-symbols-rounded">star</span>
+                    <span>My Reviews</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <p>&copy; 2026 Vehicle Rental</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dash-main">
+            <div class="section-title-bar">
+                <div>
+                    <h1 class="section-heading">Search Vehicles</h1>
+                    <p class="section-sub">Discover &amp; book from thousands of vehicles across India</p>
+                </div>
+            </div>
+
+            <!-- Filter Card -->
+            <div class="filter-card">
+                <div class="filter-card-header">
+                    <div class="filter-card-title">
+                        <span class="material-symbols-rounded">tune</span>
+                        <h3>Search &amp; Filter</h3>
+                    </div>
+                    <button type="button" class="filter-collapse-btn" onclick="toggleFilters()">
+                        <span class="material-symbols-rounded" id="filterCollapseIcon">expand_less</span>
+                    </button>
+                </div>
+                <form id="searchForm" autocomplete="off" class="filter-form">
+                    <div class="filter-grid">
+                        <div class="filter-group">
+                            <label for="stateSelect">State</label>
+                            <div class="select-wrap">
+                                <select name="state" id="stateSelect">
+                                    <option value="">All States</option>
+                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                    <option value="Assam">Assam</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Chhattisgarh">Chhattisgarh</option>
+                                    <option value="Goa">Goa</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                    <option value="Jharkhand">Jharkhand</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Manipur">Manipur</option>
+                                    <option value="Meghalaya">Meghalaya</option>
+                                    <option value="Mizoram">Mizoram</option>
+                                    <option value="Nagaland">Nagaland</option>
+                                    <option value="Odisha">Odisha</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Sikkim">Sikkim</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Telangana">Telangana</option>
+                                    <option value="Tripura">Tripura</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="Uttarakhand">Uttarakhand</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Chandigarh">Chandigarh</option>
+                                    <option value="Puducherry">Puducherry</option>
+                                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                    <option value="Ladakh">Ladakh</option>
+                                </select>
+                                <span class="material-symbols-rounded select-arrow">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="citySelect">City</label>
+                            <div class="select-wrap">
+                                <select name="city" id="citySelect">
+                                    <option value="">All Cities</option>
+                                </select>
+                                <span class="material-symbols-rounded select-arrow">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="areaSelect">Area / Locality</label>
+                            <div class="select-wrap">
+                                <select name="area" id="areaSelect">
+                                    <option value="">All Areas</option>
+                                </select>
+                                <span class="material-symbols-rounded select-arrow">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="vehicleType">Vehicle Type</label>
+                            <div class="select-wrap">
+                                <select name="vehicleType" id="vehicleType">
+                                    <option value="">All Types</option>
+                                    <option value="CAR">Car</option>
+                                    <option value="BIKE">Bike</option>
+                                    <option value="SCOOTER">Scooter</option>
+                                    <option value="SUV">SUV</option>
+                                    <option value="VAN">Van</option>
+                                    <option value="TRUCK">Truck</option>
+                                </select>
+                                <span class="material-symbols-rounded select-arrow">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label>Min &#8377;/day</label>
+                            <div class="input-icon-wrap">
+                                <span class="material-symbols-rounded input-icon">currency_rupee</span>
+                                <input type="number" name="minPrice" placeholder="0" min="0">
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label>Max &#8377;/day</label>
+                            <div class="input-icon-wrap">
+                                <span class="material-symbols-rounded input-icon">currency_rupee</span>
+                                <input type="number" name="maxPrice" placeholder="Any" min="0">
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="rentalDays">Duration</label>
+                            <div class="select-wrap">
+                                <select name="rentalDays" id="rentalDays">
+                                    <option value="1">1 Day</option>
+                                    <option value="2">2 Days</option>
+                                    <option value="3">3 Days</option>
+                                    <option value="5">5 Days</option>
+                                    <option value="7">1 Week</option>
+                                    <option value="14">2 Weeks</option>
+                                    <option value="30">1 Month</option>
+                                </select>
+                                <span class="material-symbols-rounded select-arrow">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="submit" class="btn-search">
+                            <span class="material-symbols-rounded">search</span> Search Vehicles
+                        </button>
+                        <button type="reset" class="btn-reset" onclick="resetFilters()">
+                            <span class="material-symbols-rounded">restart_alt</span> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results -->
+            <div id="vehicleResults" class="results-container">
+                <div class="initial-state">
+                    <span class="material-symbols-rounded">travel_explore</span>
+                    <h3>Ready to explore?</h3>
+                    <p>Select a location and click <strong>Search</strong> to discover vehicles near you.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Cities data mapped by state
+        const citiesByState = {
+            'Andhra Pradesh': ['Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore', 'Kurnool', 'Tirupati', 'Rajahmundry', 'Kakinada', 'Kadapa', 'Anantapur', 'Eluru', 'Ongole', 'Srikakulam', 'Chittoor'],
+            'Arunachal Pradesh': ['Itanagar', 'Naharlagun', 'Pasighat', 'Tawang', 'Ziro', 'Bomdila', 'Along', 'Tezu'],
+            'Assam': ['Guwahati', 'Silchar', 'Dibrugarh', 'Jorhat', 'Nagaon', 'Tinsukia', 'Tezpur', 'Bongaigaon', 'Dhubri', 'Karimganj'],
+            'Bihar': ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Purnia', 'Darbhanga', 'Arrah', 'Begusarai', 'Katihar', 'Munger', 'Chapra', 'Sasaram'],
+            'Chhattisgarh': ['Raipur', 'Bhilai', 'Bilaspur', 'Korba', 'Durg', 'Rajnandgaon', 'Raigarh', 'Jagdalpur', 'Ambikapur'],
+            'Goa': ['Panaji', 'Margao', 'Vasco da Gama', 'Mapusa', 'Ponda', 'Bicholim'],
+            'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Gandhinagar', 'Anand', 'Nadiad', 'Mehsana', 'Morbi', 'Bharuch', 'Vapi', 'Navsari'],
+            'Haryana': ['Gurugram', 'Faridabad', 'Panipat', 'Ambala', 'Karnal', 'Hisar', 'Rohtak', 'Sonipat', 'Yamunanagar', 'Panchkula', 'Bhiwani', 'Sirsa'],
+            'Himachal Pradesh': ['Shimla', 'Manali', 'Dharamshala', 'Solan', 'Mandi', 'Kullu', 'Bilaspur', 'Hamirpur', 'Una', 'Palampur'],
+            'Jharkhand': ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro', 'Deoghar', 'Hazaribagh', 'Giridih', 'Ramgarh', 'Dumka'],
+            'Karnataka': ['Bengaluru', 'Mysuru', 'Mangaluru', 'Hubli', 'Dharwad', 'Belagavi', 'Kalaburagi', 'Davangere', 'Ballari', 'Shimoga', 'Tumkur', 'Udupi', 'Hassan'],
+            'Kerala': ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam', 'Kannur', 'Alappuzha', 'Palakkad', 'Malappuram', 'Kottayam', 'Kasaragod', 'Idukki'],
+            'Madhya Pradesh': ['Bhopal', 'Indore', 'Jabalpur', 'Gwalior', 'Ujjain', 'Sagar', 'Dewas', 'Satna', 'Ratlam', 'Rewa', 'Singrauli', 'Burhanpur', 'Khandwa'],
+            'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Thane', 'Nashik', 'Aurangabad', 'Solapur', 'Kolhapur', 'Amravati', 'Navi Mumbai', 'Sangli', 'Akola', 'Latur', 'Dhule', 'Jalgaon', 'Chandrapur'],
+            'Manipur': ['Imphal', 'Thoubal', 'Bishnupur', 'Churachandpur', 'Kakching'],
+            'Meghalaya': ['Shillong', 'Tura', 'Jowai', 'Nongstoin', 'Williamnagar'],
+            'Mizoram': ['Aizawl', 'Lunglei', 'Champhai', 'Serchhip', 'Kolasib'],
+            'Nagaland': ['Kohima', 'Dimapur', 'Mokokchung', 'Tuensang', 'Wokha', 'Zunheboto'],
+            'Odisha': ['Bhubaneswar', 'Cuttack', 'Rourkela', 'Brahmapur', 'Sambalpur', 'Puri', 'Balasore', 'Baripada', 'Bhadrak', 'Jharsuguda'],
+            'Punjab': ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda', 'Mohali', 'Pathankot', 'Hoshiarpur', 'Moga', 'Phagwara', 'Batala', 'Firozpur'],
+            'Rajasthan': ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Bikaner', 'Ajmer', 'Bhilwara', 'Alwar', 'Sikar', 'Sri Ganganagar', 'Pali', 'Tonk', 'Kishangarh', 'Beawar'],
+            'Sikkim': ['Gangtok', 'Namchi', 'Gyalshing', 'Mangan', 'Rangpo', 'Singtam'],
+            'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 'Erode', 'Vellore', 'Thoothukudi', 'Dindigul', 'Thanjavur', 'Tiruppur', 'Nagercoil', 'Kanchipuram'],
+            'Telangana': ['Hyderabad', 'Warangal', 'Nizamabad', 'Karimnagar', 'Khammam', 'Ramagundam', 'Mahbubnagar', 'Nalgonda', 'Adilabad', 'Siddipet', 'Suryapet'],
+            'Tripura': ['Agartala', 'Udaipur', 'Dharmanagar', 'Kailasahar', 'Belonia', 'Ambassa'],
+            'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Agra', 'Varanasi', 'Meerut', 'Prayagraj', 'Ghaziabad', 'Noida', 'Bareilly', 'Aligarh', 'Moradabad', 'Gorakhpur', 'Saharanpur', 'Jhansi', 'Mathura', 'Firozabad', 'Ayodhya'],
+            'Uttarakhand': ['Dehradun', 'Haridwar', 'Rishikesh', 'Roorkee', 'Haldwani', 'Rudrapur', 'Kashipur', 'Nainital', 'Mussoorie', 'Pithoragarh'],
+            'West Bengal': ['Kolkata', 'Howrah', 'Asansol', 'Siliguri', 'Durgapur', 'Bardhaman', 'Malda', 'Baharampur', 'Habra', 'Kharagpur', 'Darjeeling', 'Haldia'],
+            'Delhi': ['New Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi', 'Central Delhi', 'Dwarka', 'Rohini', 'Saket', 'Lajpat Nagar'],
+            'Chandigarh': ['Chandigarh'],
+            'Puducherry': ['Puducherry', 'Karaikal', 'Mahe', 'Yanam'],
+            'Jammu and Kashmir': ['Srinagar', 'Jammu', 'Anantnag', 'Baramulla', 'Sopore', 'Kathua', 'Udhampur', 'Pulwama', 'Rajouri'],
+            'Ladakh': ['Leh', 'Kargil']
+        };
+
+        const areasByCity = {
+            'Visakhapatnam': ['Gajuwaka', 'Madhurawada', 'Seethammadhara', 'Dwaraka Nagar', 'MVP Colony', 'Rushikonda', 'NAD Junction', 'Pendurthi'],
+            'Vijayawada': ['Benz Circle', 'Labbipet', 'Governorpet', 'Moghalrajpuram', 'Patamata', 'Gandhinagar', 'Auto Nagar'],
+            'Guntur': ['Brodipet', 'Arundelpet', 'Lakshmipuram', 'Nagarampalem', 'AT Agraharam', 'Pattabhipuram'],
+            'Tirupati': ['Tirumala', 'Alipiri', 'Renigunta', 'Bairagipatteda', 'Mangalam', 'GP Road'],
+            'Hyderabad': ['Banjara Hills', 'Jubilee Hills', 'Madhapur', 'Gachibowli', 'Kukatpally', 'Ameerpet', 'Secunderabad', 'Begumpet', 'Kondapur', 'Hitech City', 'Miyapur', 'LB Nagar', 'Dilsukhnagar', 'Uppal', 'Manikonda', 'Charminar', 'Abids', 'Somajiguda', 'Tolichowki'],
+            'Warangal': ['Hanamkonda', 'Kazipet', 'Subedari', 'Hunter Road', 'Jangaon Road'],
+            'Chennai': ['T. Nagar', 'Anna Nagar', 'Adyar', 'Velachery', 'Tambaram', 'Guindy', 'Porur', 'Chromepet', 'Sholinganallur', 'OMR', 'ECR', 'Mylapore', 'Egmore', 'Nungambakkam', 'Kodambakkam', 'Perambur', 'Kilpauk', 'Thiruvanmiyur'],
+            'Coimbatore': ['RS Puram', 'Gandhipuram', 'Peelamedu', 'Saravanampatti', 'Singanallur', 'Ukkadam', 'Town Hall', 'Ramanathapuram', 'Ganapathy'],
+            'Madurai': ['Anna Nagar', 'KK Nagar', 'Goripalayam', 'Arapalayam', 'Tallakulam', 'Villapuram', 'Thirunagar', 'Mattuthavani'],
+            'Bengaluru': ['Koramangala', 'Indiranagar', 'Whitefield', 'HSR Layout', 'Jayanagar', 'JP Nagar', 'Marathahalli', 'BTM Layout', 'Electronic City', 'Bannerghatta Road', 'Hebbal', 'Yelahanka', 'Malleswaram', 'Rajajinagar', 'Basavanagudi', 'MG Road', 'Brigade Road', 'Sarjapur Road'],
+            'Mysuru': ['Saraswathipuram', 'Vijayanagar', 'Kuvempunagar', 'Gokulam', 'Hebbal', 'Hootagalli', 'Bannimantap'],
+            'Mangaluru': ['Hampankatta', 'Kadri', 'Bejai', 'Kankanady', 'Falnir', 'Surathkal', 'Derebail'],
+            'Mumbai': ['Andheri', 'Bandra', 'Borivali', 'Dadar', 'Goregaon', 'Juhu', 'Kandivali', 'Kurla', 'Malad', 'Powai', 'Thane', 'Vashi', 'Worli', 'Lower Parel', 'Colaba', 'Fort', 'Churchgate', 'Marine Lines', 'Santacruz', 'Vikhroli'],
+            'Pune': ['Koregaon Park', 'Viman Nagar', 'Hinjewadi', 'Kothrud', 'Hadapsar', 'Baner', 'Wakad', 'Aundh', 'Kharadi', 'Pimpri-Chinchwad', 'Shivajinagar', 'Deccan', 'Swargate', 'Camp', 'Kalyani Nagar'],
+            'Nagpur': ['Dharampeth', 'Sitabuldi', 'Sadar', 'Manewada', 'Pratap Nagar', 'Laxmi Nagar', 'Wardhaman Nagar', 'Civil Lines'],
+            'Nashik': ['College Road', 'Gangapur Road', 'Panchavati', 'Cidco', 'Indira Nagar', 'Satpur', 'Deolali'],
+            'Kolhapur': ['Rajarampuri', 'Shahupuri', 'Tarabai Park', 'Nagala Park', 'Sykes Extension', 'Rankala'],
+            'Ahmedabad': ['CG Road', 'SG Highway', 'Satellite', 'Prahlad Nagar', 'Vastrapur', 'Navrangpura', 'Maninagar', 'Bopal', 'Thaltej', 'Bodakdev', 'Paldi', 'Ellis Bridge', 'Ambawadi'],
+            'Surat': ['Adajan', 'Vesu', 'Athwa', 'Varachha', 'Piplod', 'Pal', 'Katargam', 'Dumas Road', 'City Light'],
+            'Vadodara': ['Alkapuri', 'Fatehgunj', 'Manjalpur', 'Karelibaug', 'Gotri', 'Akota', 'Old Padra Road', 'Race Course'],
+            'Rajkot': ['Kalavad Road', 'University Road', 'Yagnik Road', 'Kalawad Road', '150 Ft Ring Road', 'Pedak Road'],
+            'New Delhi': ['Connaught Place', 'Karol Bagh', 'Paharganj', 'Chandni Chowk', 'Rajouri Garden', 'Janakpuri', 'Pitampura', 'Model Town', 'Vasant Kunj', 'Hauz Khas', 'Green Park', 'Saket', 'Lajpat Nagar', 'Defence Colony', 'Greater Kailash', 'Nehru Place'],
+            'North Delhi': ['Civil Lines', 'Model Town', 'GTB Nagar', 'Kamla Nagar', 'Shakti Nagar', 'Mukherjee Nagar', 'Hudson Lane'],
+            'South Delhi': ['Saket', 'Hauz Khas', 'Green Park', 'Greater Kailash', 'CR Park', 'Malviya Nagar', 'Mehrauli', 'Sangam Vihar', 'Chattarpur'],
+            'East Delhi': ['Preet Vihar', 'Laxmi Nagar', 'Mayur Vihar', 'Pandav Nagar', 'Patparganj', 'Shakarpur', 'Vivek Vihar'],
+            'West Delhi': ['Rajouri Garden', 'Janakpuri', 'Dwarka', 'Tilak Nagar', 'Subhash Nagar', 'Vikaspuri', 'Uttam Nagar', 'Paschim Vihar'],
+            'Dwarka': ['Sector 1', 'Sector 2', 'Sector 3', 'Sector 4', 'Sector 5', 'Sector 6', 'Sector 7', 'Sector 10', 'Sector 12', 'Sector 21'],
+            'Kolkata': ['Park Street', 'Salt Lake', 'New Town', 'Howrah', 'Gariahat', 'Ballygunge', 'Alipore', 'Behala', 'Jadavpur', 'Dum Dum', 'Tollygunge', 'Esplanade', 'Rajarhat', 'Baranagar'],
+            'Siliguri': ['Hill Cart Road', 'Sevoke Road', 'Pradhan Nagar', 'Hakimpara', 'Matigara', 'Salugara'],
+            'Lucknow': ['Hazratganj', 'Gomti Nagar', 'Aminabad', 'Alambagh', 'Indira Nagar', 'Aliganj', 'Chowk', 'Mahanagar', 'Vikas Nagar', 'Jankipuram'],
+            'Kanpur': ['Mall Road', 'Swaroop Nagar', 'Kakadeo', 'Kidwai Nagar', 'Civil Lines', 'Harsh Nagar', 'Govind Nagar'],
+            'Agra': ['Taj Nagri', 'Fatehabad Road', 'Sanjay Place', 'Civil Lines', 'Kamla Nagar', 'Sikandra', 'Dayal Bagh'],
+            'Varanasi': ['Assi Ghat', 'Lanka', 'Godowlia', 'Sigra', 'Bhelupur', 'Cantt', 'Shivpur', 'Dashashwamedh'],
+            'Noida': ['Sector 18', 'Sector 62', 'Sector 15', 'Sector 16', 'Sector 44', 'Sector 50', 'Sector 76', 'Sector 137', 'Sector 142', 'Greater Noida'],
+            'Ghaziabad': ['Indirapuram', 'Vaishali', 'Kaushambi', 'Raj Nagar Extension', 'Vasundhara', 'Crossing Republik', 'Mohan Nagar'],
+            'Jaipur': ['MI Road', 'Malviya Nagar', 'Vaishali Nagar', 'Mansarovar', 'C-Scheme', 'Tonk Road', 'Raja Park', 'Bapu Nagar', 'Sodala', 'Jagatpura', 'Sanganer', 'Amer Road'],
+            'Jodhpur': ['Ratanada', 'Paota', 'Sardarpura', 'Shastri Nagar', 'Basni', 'Pal Road', 'Mandore Road'],
+            'Udaipur': ['Fateh Sagar', 'Hiran Magri', 'Sukhadia Circle', 'Chetak Circle', 'Pratap Nagar', 'Govardhan Vilas', 'Bhuwana'],
+            'Kota': ['Talwandi', 'Mahaveer Nagar', 'Kunhari', 'Vigyan Nagar', 'Dadabari', 'Gumanpura'],
+            'Patna': ['Boring Road', 'Kankarbagh', 'Rajendra Nagar', 'Bailey Road', 'Danapur', 'Ashiana Nagar', 'Patliputra', 'Exhibition Road', 'Fraser Road'],
+            'Gaya': ['Station Road', 'Swarajpuri', 'GB Road', 'Bodh Gaya', 'Delha', 'Rampur'],
+            'Ludhiana': ['Model Town', 'Sarabha Nagar', 'BRS Nagar', 'Civil Lines', 'Dugri', 'Pakhowal Road', 'Ferozepur Road'],
+            'Amritsar': ['Lawrence Road', 'Ranjit Avenue', 'Mall Road', 'White Avenue', 'Green Avenue', 'GT Road', 'Majitha Road'],
+            'Jalandhar': ['Model Town', 'Green Park', 'BMC Chowk', 'Maqsudan', 'Lajpat Nagar', 'Urban Estate'],
+            'Bhopal': ['MP Nagar', 'Arera Colony', 'New Market', 'Habibganj', 'Kolar Road', 'Hoshangabad Road', 'TT Nagar', 'Shahpura', 'Bairagarh'],
+            'Indore': ['Vijay Nagar', 'Palasia', 'Sapna Sangeeta', 'MG Road', 'AB Road', 'Bhawarkua', 'Rau', 'Nipania', 'Super Corridor'],
+            'Ranchi': ['Main Road', 'Lalpur', 'Doranda', 'Harmu', 'Bariatu', 'Hinoo', 'Kanke Road', 'Morabadi'],
+            'Jamshedpur': ['Bistupur', 'Sakchi', 'Sonari', 'Kadma', 'Golmuri', 'Telco', 'Adityapur', 'Mango'],
+            'Raipur': ['Pandri', 'Shankar Nagar', 'Fafadih', 'Telibandha', 'Civil Lines', 'Mowa', 'Tatibandh', 'Amanaka'],
+            'Bhubaneswar': ['Saheed Nagar', 'Jaydev Vihar', 'Patia', 'Nayapalli', 'Chandrasekharpur', 'Rasulgarh', 'Mancheswar', 'Master Canteen', 'Khandagiri'],
+            'Cuttack': ['Buxi Bazaar', 'College Square', 'Badambadi', 'Naya Bazaar', 'Cantonment Road', 'Link Road'],
+            'Dehradun': ['Rajpur Road', 'Clock Tower', 'Paltan Bazaar', 'Race Course', 'Dalanwala', 'Clement Town', 'Ballupur', 'Sahastradhara Road'],
+            'Haridwar': ['Har Ki Pauri', 'Jwalapur', 'Ranipur', 'Shivalik Nagar', 'Kankhal', 'Bahadrabad'],
+            'Gurugram': ['DLF Phase 1-5', 'Sushant Lok', 'MG Road', 'Golf Course Road', 'Sector 14', 'Sector 29', 'Sector 49', 'Cyber City', 'Sohna Road', 'Old Gurgaon'],
+            'Faridabad': ['Sector 15', 'Sector 16', 'Sector 21', 'NIT', 'Ballabgarh', 'Old Faridabad', 'Surajkund'],
+            'Chandigarh': ['Sector 17', 'Sector 22', 'Sector 35', 'Sector 43', 'Sector 8', 'Sector 9', 'Sector 15', 'Manimajra', 'IT Park'],
+            'Thiruvananthapuram': ['MG Road', 'Kowdiar', 'Pattom', 'Palayam', 'Thampanoor', 'Kazhakkoottam', 'Technopark', 'Vellayambalam', 'Vazhuthacaud'],
+            'Kochi': ['MG Road', 'Marine Drive', 'Edappally', 'Kakkanad', 'Palarivattom', 'Kaloor', 'Fort Kochi', 'Ernakulam South', 'Vyttila', 'Aluva', 'Infopark'],
+            'Kozhikode': ['Mavoor Road', 'Beach Road', 'Palayam', 'Thondayad', 'Hilite City', 'Bypass', 'Nadakkavu'],
+            'Panaji': ['MG Road', 'Fontainhas', 'Altinho', 'Campal', 'Miramar', 'Dona Paula', 'Patto', 'Ribandar'],
+            'Margao': ['Grace Church', 'Fatorda', 'Comba', 'Borda', 'Aquem', 'Monte Hill'],
+            'Shimla': ['Mall Road', 'Lakkar Bazaar', 'Kachi Ghati', 'Summer Hill', 'Sanjauli', 'Tutikandi', 'Boileauganj'],
+            'Gangtok': ['MG Marg', 'Deorali', 'Tadong', '5th Mile', 'Tathangchen', 'Arithang', 'Development Area'],
+            'Imphal': ['Thangal Bazaar', 'Paona Bazaar', 'Keishampat', 'Wahengbam Leikai', 'Singjamei', 'Lamphel'],
+            'Shillong': ['Police Bazaar', 'Laitumkhrah', 'Lachumiere', 'Nongthymmai', 'Mawlai', 'Nongrim Hills'],
+            'Aizawl': ['Bara Bazar', 'Zarkawt', 'Chanmari', 'Dawrpui', 'Chaltlang', 'Bawngkawn'],
+            'Kohima': ['Main Town', 'Midland', 'High School Junction', 'Billy Graham Road', 'PRHill'],
+            'Agartala': ['Battala', 'Gol Bazar', 'Krishnanagar', 'Banamalipur', 'Motor Stand', 'Ramnagar'],
+            'Srinagar': ['Dal Gate', 'Lal Chowk', 'Rajbagh', 'Sonwar', 'Hazratbal', 'Nishat', 'Shalimar', 'Brein'],
+            'Jammu': ['Gandhi Nagar', 'Residency Road', 'Trikuta Nagar', 'Channi Himmat', 'Janipur', 'Bantalab', 'Rehari'],
+            'Leh': ['Main Bazaar', 'Changspa', 'Fort Road', 'Skara', 'Sankar', 'Karzoo']
+        };
+
+        function resetInitialState() {
+            document.getElementById('vehicleResults').innerHTML = `
+                <div class="initial-state">
+                    <span class="material-symbols-rounded">travel_explore</span>
+                    <h3>Ready to explore?</h3>
+                    <p>Select a location and click <strong>Search</strong> to discover vehicles near you.</p>
+                </div>`;
+        }
+
+        function resetFilters() {
+            document.getElementById('citySelect').innerHTML = '<option value="">All Cities</option>';
+            document.getElementById('areaSelect').innerHTML = '<option value="">All Areas</option>';
+            resetInitialState();
+        }
+
+        function updateCities() {
+            const state = document.getElementById('stateSelect').value;
+            const citySelect = document.getElementById('citySelect');
+            const areaSelect = document.getElementById('areaSelect');
+            citySelect.innerHTML = '<option value="">All Cities</option>';
+            areaSelect.innerHTML = '<option value="">All Areas</option>';
+            resetInitialState();
+            if (state && citiesByState[state]) {
+                citiesByState[state].forEach(c => {
+                    citySelect.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+            }
+        }
+
+        function updateAreas() {
+            const city = document.getElementById('citySelect').value;
+            const areaSelect = document.getElementById('areaSelect');
+            areaSelect.innerHTML = '<option value="">All Areas</option>';
+            resetInitialState();
+            if (city && areasByCity[city]) {
+                areasByCity[city].forEach(a => {
+                    areaSelect.innerHTML += `<option value="${a}">${a}</option>`;
+                });
+            }
+        }
+
+        document.getElementById('stateSelect').addEventListener('change', updateCities);
+        document.getElementById('citySelect').addEventListener('change', updateAreas);
+
+        // Check auth — update nav + sidebar profile
+        checkAuth();
+        (function updateSidebarProfile() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const el = id => document.getElementById(id);
+            if (token) {
+                if (user.fullName) {
+                    if (el('userAvatar')) el('userAvatar').textContent = user.fullName.charAt(0).toUpperCase();
+                    if (el('userName')) el('userName').textContent = user.fullName;
+                }
+                if (user.email && el('userEmail')) el('userEmail').textContent = user.email;
+            }
+        })();
+
+        // Toggle filter card collapse/expand
+        function toggleFilters() {
+            const form = document.querySelector('.filter-form');
+            const icon = document.getElementById('filterCollapseIcon');
+            if (form) {
+                form.classList.toggle('collapsed');
+                icon.textContent = form.classList.contains('collapsed') ? 'expand_more' : 'expand_less';
+            }
+        }
+
+        // Search
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const searchParams = {
+                state: formData.get('state'),
+                city: formData.get('city'),
+                area: formData.get('area'),
+                vehicleType: formData.get('vehicleType'),
+                minPrice: formData.get('minPrice'),
+                maxPrice: formData.get('maxPrice')
+            };
+
+            Object.keys(searchParams).forEach(key => {
+                if (!searchParams[key]) delete searchParams[key];
+            });
+
+            document.getElementById('vehicleResults').innerHTML = `
+                <div class="loading-state">
+                    <span class="material-symbols-rounded spin">progress_activity</span>
+                    <p>Searching vehicles...</p>
+                </div>`;
+
+            try {
+                const query = new URLSearchParams(searchParams).toString();
+                const vehicles = await apiCall(`/api/public/vehicles/search?${query}`, 'GET');
+                displayVehicles(vehicles, searchParams);
+            } catch (error) {
+                try {
+                    const token = localStorage.getItem('token');
+                    if (token) {
+                        const query = new URLSearchParams(searchParams).toString();
+                        const vehicles = await apiCall(`/api/customer/vehicles/search?${query}`, 'GET', null, token);
+                        displayVehicles(vehicles, searchParams);
+                    } else {
+                        document.getElementById('vehicleResults').innerHTML = `
+                            <div class="error-result">
+                                <span class="material-symbols-rounded">error</span>
+                                <h3>Search failed</h3>
+                                <p>Something went wrong. Please try again.</p>
+                            </div>`;
+                    }
+                } catch (err) {
+                    document.getElementById('vehicleResults').innerHTML = `
+                        <div class="error-result">
+                            <span class="material-symbols-rounded">error</span>
+                            <h3>Search failed</h3>
+                            <p>Something went wrong. Please try again.</p>
+                        </div>`;
+                }
+            }
+        });
+
+        // Vehicle type icon helper
+        function getVehicleIcon(type) {
+            const icons = {
+                'CAR': 'directions_car', 'BIKE': 'two_wheeler', 'SCOOTER': 'electric_scooter',
+                'SUV': 'directions_car', 'VAN': 'airport_shuttle', 'TRUCK': 'local_shipping'
+            };
+            return icons[type] || 'directions_car';
+        }
+
+        function displayVehicles(vehicles, searchParams) {
+            const container = document.getElementById('vehicleResults');
+
+            if (!vehicles || vehicles.length === 0) {
+                const areaName = searchParams && searchParams.area ? searchParams.area : 'this location';
+                container.innerHTML = `
+                    <div class="empty-result">
+                        <span class="material-symbols-rounded">search_off</span>
+                        <h3>No vehicles found in ${areaName}</h3>
+                        <p>Try selecting a different area or broadening your filters.</p>
+                    </div>`;
+                return;
+            }
+
+            const days = parseInt(document.getElementById('rentalDays').value) || 1;
+
+            // Group by shop
+            const shopMap = {};
+            vehicles.forEach(v => {
+                const key = v.shopId || 'unknown';
+                if (!shopMap[key]) {
+                    shopMap[key] = {
+                        shopName: v.shopName || 'Unknown Shop',
+                        city: v.city || '',
+                        area: v.area || '',
+                        state: v.state || '',
+                        address: v.address || '',
+                        vehicles: []
+                    };
+                }
+                shopMap[key].vehicles.push(v);
+            });
+
+            const shopCount = Object.keys(shopMap).length;
+            const vehicleCount = vehicles.length;
+            const locationInfo = searchParams && searchParams.area
+                ? `in <strong>${searchParams.area}</strong>, ${searchParams.city || ''}`
+                : searchParams && searchParams.city
+                    ? `in <strong>${searchParams.city}</strong>`
+                    : '';
+
+            let html = `
+                <div class="results-summary">
+                    <div class="summary-left">
+                        <span class="material-symbols-rounded">fact_check</span>
+                        <span>Found <strong>${shopCount} shop${shopCount > 1 ? 's' : ''}</strong> with <strong>${vehicleCount} vehicle${vehicleCount > 1 ? 's' : ''}</strong> ${locationInfo}</span>
+                    </div>
+                </div>`;
+
+            for (const shopId in shopMap) {
+                const shop = shopMap[shopId];
+
+                html += `
+                <div class="shop-group">
+                    <div class="shop-header">
+                        <div class="shop-info">
+                            <span class="material-symbols-rounded shop-icon">store</span>
+                            <div>
+                                <h3>${shop.shopName}</h3>
+                                <p><span class="material-symbols-rounded" style="font-size:.9rem">location_on</span> ${shop.area ? shop.area + ', ' : ''}${shop.city}${shop.state ? ', ' + shop.state : ''}${shop.address ? ' &mdash; ' + shop.address : ''}</p>
+                            </div>
+                        </div>
+                        <span class="shop-vehicle-count">${shop.vehicles.length} vehicle${shop.vehicles.length > 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="shop-vehicles-grid">`;
+
+                shop.vehicles.forEach(vehicle => {
+                    const totalCost = (vehicle.pricePerDay * days).toFixed(2);
+                    const rating = vehicle.averageRating?.toFixed(1) || '0.0';
+                    const starFill = Math.round(parseFloat(rating));
+
+                    html += `
+                        <div class="v-card">
+                            <div class="v-card-img">
+                                <img src="${resolveVehicleImg(vehicle.imageUrl, vehicle.vehicleName)}" alt="${vehicle.vehicleName}" loading="lazy">
+                                <span class="v-type-badge"><span class="material-symbols-rounded">${getVehicleIcon(vehicle.vehicleType)}</span> ${vehicle.vehicleType || ''}</span>
+                            </div>
+                            <div class="v-card-body">
+                                <h4 class="v-name">${vehicle.vehicleName}</h4>
+                                <p class="v-brand">${vehicle.brand || ''} ${vehicle.model || ''}</p>
+                                <div class="v-meta">
+                                    <span class="v-rating"><span class="material-symbols-rounded" style="color:#f59e0b;font-size:1rem">star</span> ${rating}</span>
+                                    <span class="v-location"><span class="material-symbols-rounded" style="font-size:.9rem">location_on</span> ${shop.area ? shop.area : vehicle.city || ''}</span>
+                                </div>
+                                <div class="v-pricing">
+                                    <div class="v-price-per-day">&#8377;${vehicle.pricePerDay}<span>/day</span></div>
+                                    <div class="v-total">Total (${days} day${days > 1 ? 's' : ''}): <strong>&#8377;${totalCost}</strong></div>
+                                </div>
+                                <a href="vehicle-details.html?id=${vehicle.id}&days=${days}" class="v-btn-details">
+                                    View Details <span class="material-symbols-rounded">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>`;
+                });
+
+                html += `</div></div>`;
+            }
+
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
