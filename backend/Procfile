@@ -1,0 +1,1 @@
+web: java -jar target/vehicle-rental-platform-1.0.0.jar
