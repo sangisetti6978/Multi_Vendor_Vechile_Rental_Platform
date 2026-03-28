@@ -1,5 +1,6 @@
 package com.vehiclerental.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,12 +16,21 @@ public class BookingDTO {
     private String vehicleName;
     private Long shopId;
     private String shopName;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startTime;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endTime;
+    
     private Integer totalHours;
     private BigDecimal totalPrice;
     private String status;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime bookingDate;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime confirmationDeadline;
     private String notes;
     private String paymentStatus;

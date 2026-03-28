@@ -305,10 +305,13 @@ async function loadMyBookings() {
         
     } catch (error) {
         document.getElementById('bookingStats').innerHTML = '';
+        const errorMsg = error.message || 'Unknown error occurred';
         document.getElementById('bookingsList').innerHTML = `
             <div class="error-state">
                 <span class="material-symbols-rounded">error</span>
-                <p>Failed to load bookings. Please try again.</p>
+                <p>Failed to load bookings.</p>
+                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Error: ${errorMsg}</p>
+                <button onclick="location.reload()" style="margin-top: 15px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Retry</button>
             </div>`;
         console.error('Error loading bookings:', error);
     }

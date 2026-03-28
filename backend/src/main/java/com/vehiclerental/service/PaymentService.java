@@ -24,8 +24,12 @@ public class PaymentService {
     }
     
     public Payment getPaymentByBooking(Long bookingId) {
-        return paymentRepository.findByBookingId(bookingId)
+        return paymentRepository.findFirstByBookingIdOrderByPaymentDateDesc(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment not found for booking id: " + bookingId));
+    }
+    
+    public List<Payment> getPaymentsByBooking(Long bookingId) {
+        return paymentRepository.findByBookingId(bookingId);
     }
     
     public List<Payment> getAllPayments() {

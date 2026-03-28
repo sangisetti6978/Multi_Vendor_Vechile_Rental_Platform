@@ -137,7 +137,8 @@ public class BookingService {
         Booking updatedBooking = bookingRepository.save(booking);
         
         // Auto-create a pending payment for this booking
-        if (!paymentRepository.findByBookingId(bookingId).isPresent()) {
+        List<Payment> existingPayments = paymentRepository.findByBookingId(bookingId);
+        if (existingPayments.isEmpty()) {
             Payment payment = new Payment();
             payment.setBookingId(bookingId);
             payment.setAmount(updatedBooking.getTotalPrice());
@@ -260,8 +261,8 @@ public class BookingService {
             dto.setShopName(shop.getShopName());
         }
         
-        // Get payment details
-        paymentRepository.findByBookingId(booking.getId()).ifPresent(payment -> {
+        // Get payment details (use the latest payment if multiple exist)
+        paymentRepository.findByBookingId(booking.getId()).stream().findFirst().ifPresent(payment -> {
             dto.setPaymentStatus(payment.getPaymentStatus().name());
             dto.setPaymentId(payment.getId());
             dto.setPaymentMethod(payment.getPaymentMethod());

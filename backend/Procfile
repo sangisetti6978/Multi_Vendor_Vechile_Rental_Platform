@@ -1,1 +1,4 @@
 web: java -jar target/vehicle-rental-platform-1.0.0.jar
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521/XEPDB1
+spring.datasource.username=vehiclerental
+spring.datasource.password=vehiclerental123
