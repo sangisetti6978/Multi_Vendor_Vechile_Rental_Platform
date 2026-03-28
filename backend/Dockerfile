@@ -1,17 +1,11 @@
-FROM eclipse-temurin:17-jdk
+FROM maven:3.9.6-eclipse-temurin-17
 
 WORKDIR /app
 
 COPY . .
 
-RUN apt-get update && apt-get install -y maven
-
-# 🔥 SHOW BUILD OUTPUT (IMPORTANT)
 RUN mvn clean package -DskipTests
-
-# 🔍 DEBUG: LIST FILES
-RUN ls -R target
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "java -jar target/*.jar"]
+CMD ["java", "-jar", "target/vehicle-rental-platform-1.0.0.jar"]
