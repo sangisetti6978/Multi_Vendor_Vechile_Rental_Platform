@@ -1,5 +1,5 @@
 // API Configuration — uses current hostname so it works from any device
-const API_BASE_URL = 'http://localhost:8081'; // Backend service
+const API_URL = 'https://vehicle-rental-backend.onrender.com' // Backend service
 
 // Resolve vehicle image URL — handles server-relative paths, full URLs, and missing images
 function resolveVehicleImg(url, fallbackName) {
