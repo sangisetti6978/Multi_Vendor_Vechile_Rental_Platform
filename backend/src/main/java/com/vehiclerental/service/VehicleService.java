@@ -1,21 +1,22 @@
 package com.vehiclerental.service;
 
-import com.vehiclerental.dto.SearchRequest;
-import com.vehiclerental.dto.VehicleDTO;
-import com.vehiclerental.model.Shop;
-import com.vehiclerental.model.Vehicle;
-import com.vehiclerental.model.User;
-import com.vehiclerental.repository.ShopRepository;
-import com.vehiclerental.repository.UserRepository;
-import com.vehiclerental.repository.VehicleRepository;
-import com.vehiclerental.repository.ReviewRepository;
-import com.vehiclerental.exception.ResourceNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.vehiclerental.dto.SearchRequest;
+import com.vehiclerental.dto.VehicleDTO;
+import com.vehiclerental.exception.ResourceNotFoundException;
+import com.vehiclerental.model.Shop;
+import com.vehiclerental.model.User;
+import com.vehiclerental.model.Vehicle;
+import com.vehiclerental.repository.ReviewRepository;
+import com.vehiclerental.repository.ShopRepository;
+import com.vehiclerental.repository.UserRepository;
+import com.vehiclerental.repository.VehicleRepository;
 
 @Service
 @Transactional
