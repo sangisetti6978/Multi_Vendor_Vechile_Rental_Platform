@@ -13,6 +13,12 @@ const avatarEl = document.getElementById('userAvatar');
 if (avatarEl && user.fullName) avatarEl.textContent = user.fullName.charAt(0).toUpperCase();
 
 let currentShops = [];
+function normalizeShopsResponse(payload) {
+    if (Array.isArray(payload)) return payload;
+    if (payload && Array.isArray(payload.data)) return payload.data;
+    if (payload && Array.isArray(payload.content)) return payload.content;
+    return [];
+}
 
 // Show section
 function showSection(sectionName, trigger) {
@@ -39,14 +45,8 @@ async function loadMyShops() {
         try {
             shops = await apiCall('/api/owner/shops', 'GET', null, token);
             if (!Array.isArray(shops)) shops = [];
-        } catch (e) {
-            console.error('Error fetching shops:', e);
-            shops = [];
-        }
-        currentShops = shops;
-
-        // Stats
-        const active = shops.filter(s => s.isActive).length;
+            const shops = await apiCall('/api/owner/shops', 'GET', null, token);
+            renderMyShops(normalizeShopsResponse(shops));
         const inactive = shops.length - active;
         document.getElementById('shopStats').innerHTML = `
             <div class="stat-chip"><span class="material-symbols-rounded">storefront</span><strong>${shops.length}</strong> Total</div>
@@ -268,14 +268,39 @@ function showCreateShopModal() {
 }
 function showCreateVehicleModal() {
     const token = localStorage.getItem('token');
-    apiCall('/api/owner/shops', 'GET', null, token).then(shops => {
+    if (!token) {
+        window.location.href = 'login-owner.html';
+        return;
+    }
+
+    const openModalWithShops = (shops) => {
+        const validShops = normalizeShopsResponse(shops).filter(s => s && s.id);
+        if (!validShops.length) {
+            alert('Please create a shop first before adding vehicles.');
+            showSection('shops', document.querySelector('.side-nav-item'));
+            return;
+        }
+
         const select = document.getElementById('shopSelect');
         select.innerHTML = '<option value="">Select a shop</option>' +
-            shops.map(s => `<option value="${s.id}">${s.shopName}</option>`).join('');
+            validShops.map(s => `<option value="${s.id}">${s.shopName}</option>`).join('');
         document.getElementById('createVehicleModal').classList.add('open');
+    };
+
+    apiCall('/api/owner/shops', 'GET', null, token).then(shops => {
+        const normalized = normalizeShopsResponse(shops);
+        if (normalized.length > 0) {
+            currentShops = normalized;
+        }
+        openModalWithShops(normalized.length ? normalized : currentShops);
     }).catch(err => {
-        console.error(err);
-        alert('Please create a shop first before adding vehicles.');
+        console.error('Error fetching shops for vehicle modal:', err);
+        if (Array.isArray(currentShops) && currentShops.length > 0) {
+            openModalWithShops(currentShops);
+            return;
+        }
+        alert('Unable to load your shops right now. Please open My Shops and refresh once.');
+        showSection('shops', document.querySelector('.side-nav-item'));
     });
 }
 function closeModal(id) {
