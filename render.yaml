@@ -1,13 +1,10 @@
 services:
   - type: web
     name: vehicle-rental-backend
-    runtime: java
+    runtime: docker
     rootDir: backend
-    buildCommand: mvn clean package -DskipTests
-    startCommand: java -jar target/vehicle-rental-platform-1.0.0.jar
+    dockerfilePath: ./Dockerfile
     envVars:
-      - key: PORT
-        sync: false
       - key: DB_URL
         sync: false
       - key: DB_USERNAME
