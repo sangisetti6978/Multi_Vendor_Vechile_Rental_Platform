@@ -7,8 +7,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vehiclerental.dto.BookingDTO;
 import com.vehiclerental.exception.ResourceNotFoundException;
@@ -26,6 +29,8 @@ import com.vehiclerental.repository.VehicleRepository;
 @Service
 @Transactional
 public class BookingService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
     
     @Autowired
     private BookingRepository bookingRepository;
@@ -47,6 +52,9 @@ public class BookingService {
     
     @Autowired
     private PaymentRepository paymentRepository;
+    
+    @Value("${booking.cancellation.delay:120}")
+    private long cancellationDelayMinutes; // Default 2 hours (120 minutes)
     
     public Booking createBooking(Booking booking) {
         // Validate vehicle exists and is available
@@ -74,7 +82,7 @@ public class BookingService {
         // Set booking details
         booking.setStatus(Booking.BookingStatus.PENDING);
         booking.setBookingDate(LocalDateTime.now());
-        booking.setConfirmationDeadline(LocalDateTime.now().plusMinutes(120)); // 2 hours
+        booking.setConfirmationDeadline(LocalDateTime.now().plusMinutes(cancellationDelayMinutes));
         booking.setShopId(vehicle.getShopId());
         
         // Update vehicle availability
@@ -212,9 +220,16 @@ public class BookingService {
     }
     
     @Transactional
+    @Scheduled(fixedRate = 60000) // Run every 60 seconds
     public void autoCancelExpiredBookings() {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> expiredBookings = bookingRepository.findExpiredPendingBookings(now);
+        
+        if (expiredBookings.isEmpty()) {
+            return;
+        }
+        
+        logger.info("Found {} expired pending bookings to cancel", expiredBookings.size());
         
         for (Booking booking : expiredBookings) {
             booking.setStatus(Booking.BookingStatus.CANCELLED);
@@ -228,6 +243,8 @@ public class BookingService {
             
             // Send cancellation notification
             emailService.sendBookingCancellationNotification(booking);
+            
+            logger.info("Auto-cancelled booking {} due to confirmation deadline expiration", booking.getId());
         }
     }
     
