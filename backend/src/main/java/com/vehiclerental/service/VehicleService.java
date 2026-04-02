@@ -12,11 +12,13 @@ import com.vehiclerental.repository.ReviewRepository;
 import com.vehiclerental.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class VehicleService {
     
     @Autowired
@@ -35,28 +37,33 @@ public class VehicleService {
         return vehicleRepository.save(vehicle);
     }
     
+    @Transactional(readOnly = true)
     public Vehicle getVehicleById(Long id) {
         return vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
     }
     
+    @Transactional(readOnly = true)
     public VehicleDTO getVehicleDTOById(Long id) {
         Vehicle vehicle = getVehicleById(id);
         return convertToDTO(vehicle);
     }
     
+    @Transactional(readOnly = true)
     public List<VehicleDTO> getAllVehicles() {
         return vehicleRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Transactional(readOnly = true)
     public List<VehicleDTO> getVehiclesByShop(Long shopId) {
         return vehicleRepository.findByShopId(shopId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Transactional(readOnly = true)
     public List<VehicleDTO> searchVehicles(SearchRequest request) {
         String state = (request.getState() != null && !request.getState().isEmpty()) ? request.getState() : null;
         String city = (request.getCity() != null && !request.getCity().isEmpty()) ? request.getCity() : null;
