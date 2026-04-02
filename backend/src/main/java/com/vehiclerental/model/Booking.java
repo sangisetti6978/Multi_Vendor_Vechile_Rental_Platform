@@ -53,7 +53,7 @@ public class Booking {
     @Column(name = "confirmation_deadline")
     private LocalDateTime confirmationDeadline;
     
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String notes;
     
     @CreationTimestamp

@@ -52,7 +52,7 @@ public class Vehicle {
     @Column(name = "price_per_day", nullable = false)
     private BigDecimal pricePerDay;
     
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
     
     @Column(name = "image_url")
