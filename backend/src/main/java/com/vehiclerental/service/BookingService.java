@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class BookingService {
     
     @Autowired
@@ -91,34 +92,40 @@ public class BookingService {
         return savedBooking;
     }
     
+    @Transactional(readOnly = true)
     public Booking getBookingById(Long id) {
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
     }
     
+    @Transactional(readOnly = true)
     public BookingDTO getBookingDTOById(Long id) {
         Booking booking = getBookingById(id);
         return convertToDTO(booking);
     }
     
+    @Transactional(readOnly = true)
     public List<BookingDTO> getBookingsByCustomer(Long customerId) {
         return bookingRepository.findByCustomerId(customerId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Transactional(readOnly = true)
     public List<BookingDTO> getAllBookings() {
         return bookingRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Transactional(readOnly = true)
     public List<BookingDTO> getBookingsByShop(Long shopId) {
         return bookingRepository.findByShopId(shopId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
+    @Transactional(readOnly = true)
     public List<BookingDTO> getBookingsByVehicle(Long vehicleId) {
         return bookingRepository.findByVehicleId(vehicleId).stream()
                 .map(this::convertToDTO)
