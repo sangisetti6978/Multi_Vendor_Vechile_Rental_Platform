@@ -48,9 +48,6 @@ public class BookingService {
     @Autowired
     private PaymentRepository paymentRepository;
     
-    @Value("${booking.cancellation.delay}")
-    private long cancellationDelay; // 2 hours in milliseconds
-    
     public Booking createBooking(Booking booking) {
         // Validate vehicle exists and is available
         Vehicle vehicle = vehicleService.getVehicleById(booking.getVehicleId());
