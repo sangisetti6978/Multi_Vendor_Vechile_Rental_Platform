@@ -1,26 +1,27 @@
 package com.vehiclerental.service;
 
-import com.vehiclerental.dto.BookingDTO;
-import com.vehiclerental.model.Booking;
-import com.vehiclerental.model.Shop;
-import com.vehiclerental.model.User;
-import com.vehiclerental.model.Vehicle;
-import com.vehiclerental.model.Payment;
-import com.vehiclerental.repository.BookingRepository;
-import com.vehiclerental.repository.PaymentRepository;
-import com.vehiclerental.repository.ShopRepository;
-import com.vehiclerental.repository.UserRepository;
-import com.vehiclerental.repository.VehicleRepository;
-import com.vehiclerental.exception.ResourceNotFoundException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.vehiclerental.dto.BookingDTO;
+import com.vehiclerental.exception.ResourceNotFoundException;
+import com.vehiclerental.model.Booking;
+import com.vehiclerental.model.Payment;
+import com.vehiclerental.model.Shop;
+import com.vehiclerental.model.User;
+import com.vehiclerental.model.Vehicle;
+import com.vehiclerental.repository.BookingRepository;
+import com.vehiclerental.repository.PaymentRepository;
+import com.vehiclerental.repository.ShopRepository;
+import com.vehiclerental.repository.UserRepository;
+import com.vehiclerental.repository.VehicleRepository;
 
 @Service
 @Transactional
@@ -50,7 +51,6 @@ public class BookingService {
     @Value("${booking.cancellation.delay}")
     private long cancellationDelay; // 2 hours in milliseconds
     
-    @Transactional
     public Booking createBooking(Booking booking) {
         // Validate vehicle exists and is available
         Vehicle vehicle = vehicleService.getVehicleById(booking.getVehicleId());
