@@ -5,18 +5,6 @@ if (!requireAuth('OWNER')) {
     throw new Error('Authentication required');
 }
 
-// Debug function - call this in browser console if needed
-window.debugOwnerAuth = function() {
-    const user = getUser();
-    const token = localStorage.getItem('token');
-    console.log('=== Owner Dashboard Debug Info ===');
-    console.log('User:', user);
-    console.log('Token:', token ? 'Present (length: ' + token.length + ')' : 'Missing');
-    console.log('User Role:', user?.role);
-    console.log('Is OWNER?', user?.role === 'OWNER');
-    return { user, token, hasAuth: !!token && user?.role === 'OWNER' };
-};
-
 // Load user info
 const user = getUser();
 document.getElementById('userName').textContent = user.fullName;
@@ -25,55 +13,6 @@ const avatarEl = document.getElementById('userAvatar');
 if (avatarEl && user.fullName) avatarEl.textContent = user.fullName.charAt(0).toUpperCase();
 
 let currentShops = [];
-
-function renderMyShops(shops) {
-    const safeShops = Array.isArray(shops) ? shops : [];
-    currentShops = safeShops;
-
-    const active = safeShops.filter(s => s && s.isActive).length;
-    const inactive = safeShops.length - active;
-    const statsEl = document.getElementById('shopStats');
-    if (statsEl) {
-        statsEl.innerHTML = `
-            <div class="stat-chip"><span class="material-symbols-rounded">storefront</span><strong>${safeShops.length}</strong> Total</div>
-            <div class="stat-chip stat-success"><span class="material-symbols-rounded">check_circle</span><strong>${active}</strong> Active</div>
-            <div class="stat-chip stat-warn"><span class="material-symbols-rounded">pause_circle</span><strong>${inactive}</strong> Inactive</div>`;
-    }
-
-    const container = document.getElementById('shopsList');
-    if (!container) return;
-
-    if (!safeShops.length) {
-        container.innerHTML = `<div class="empty-state"><span class="material-symbols-rounded">add_business</span><h3>No shops yet</h3><p>Create your first shop to start listing vehicles.</p></div>`;
-        return;
-    }
-
-    container.innerHTML = safeShops.map(shop => `
-            <div class="o-card">
-                <div class="o-card-head">
-                    <div class="o-card-icon"><span class="material-symbols-rounded">storefront</span></div>
-                    <div>
-                        <h3 class="o-card-title">${shop.shopName || '-'}</h3>
-                        <span class="o-status ${shop.isActive ? 'o-status-active' : 'o-status-inactive'}">
-                            <span class="material-symbols-rounded">${shop.isActive ? 'check_circle' : 'cancel'}</span>
-                            ${shop.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                    </div>
-                </div>
-                <div class="o-card-body">
-                    <div class="o-detail"><span class="material-symbols-rounded">location_on</span><span>${shop.city || '-'}, ${shop.state || '-'}</span></div>
-                    <div class="o-detail"><span class="material-symbols-rounded">home</span><span>${shop.address || '-'}</span></div>
-                    <div class="o-detail"><span class="material-symbols-rounded">call</span><span>${shop.phone || '-'}</span></div>
-                    <div class="o-detail"><span class="material-symbols-rounded">mail</span><span>${shop.email || '-'}</span></div>
-                </div>
-                <div class="o-card-actions">
-                    <button class="o-btn o-btn-primary" onclick="editShop(${shop.id})"><span class="material-symbols-rounded">edit</span> Edit</button>
-                    <button class="o-btn o-btn-outline" onclick="toggleShopStatus(${shop.id})">${shop.isActive ? '<span class="material-symbols-rounded">pause</span> Deactivate' : '<span class="material-symbols-rounded">play_arrow</span> Activate'}</button>
-                    <button class="o-btn o-btn-danger" onclick="deleteShop(${shop.id})"><span class="material-symbols-rounded">delete</span> Delete</button>
-                </div>
-            </div>
-        `).join('');
-}
 
 // Show section
 function showSection(sectionName, trigger) {
@@ -95,20 +34,58 @@ async function loadMyShops() {
             window.location.href = 'login.html';
             return;
         }
-        const shops = await apiCall('/api/owner/shops', 'GET', null, token);
-        renderMyShops(Array.isArray(shops) ? shops : []);
-    } catch (error) {
-        const errorMessage = error?.message || 'Failed to load shops';
-        if (errorMessage.toLowerCase().includes('session expired')) {
-            window.location.href = 'login-owner.html';
+
+        let shops = [];
+        try {
+            shops = await apiCall('/api/owner/shops', 'GET', null, token);
+            if (!Array.isArray(shops)) shops = [];
+        } catch (e) {
+            console.error('Error fetching shops:', e);
+            shops = [];
+        }
+        currentShops = shops;
+
+        // Stats
+        const active = shops.filter(s => s.isActive).length;
+        const inactive = shops.length - active;
+        document.getElementById('shopStats').innerHTML = `
+            <div class="stat-chip"><span class="material-symbols-rounded">storefront</span><strong>${shops.length}</strong> Total</div>
+            <div class="stat-chip stat-success"><span class="material-symbols-rounded">check_circle</span><strong>${active}</strong> Active</div>
+            <div class="stat-chip stat-warn"><span class="material-symbols-rounded">pause_circle</span><strong>${inactive}</strong> Inactive</div>`;
+
+        const container = document.getElementById('shopsList');
+        if (!shops.length) {
+            container.innerHTML = `<div class="empty-state"><span class="material-symbols-rounded">add_business</span><h3>No shops yet</h3><p>Create your first shop to start listing vehicles.</p></div>`;
             return;
         }
 
-        if (Array.isArray(currentShops) && currentShops.length > 0) {
-            renderMyShops(currentShops);
-        } else {
-            document.getElementById('shopsList').innerHTML = `<div class="error-state"><span class="material-symbols-rounded">error</span><p>${errorMessage}</p></div>`;
-        }
+        container.innerHTML = shops.map(shop => `
+            <div class="o-card">
+                <div class="o-card-head">
+                    <div class="o-card-icon"><span class="material-symbols-rounded">storefront</span></div>
+                    <div>
+                        <h3 class="o-card-title">${shop.shopName}</h3>
+                        <span class="o-status ${shop.isActive ? 'o-status-active' : 'o-status-inactive'}">
+                            <span class="material-symbols-rounded">${shop.isActive ? 'check_circle' : 'cancel'}</span>
+                            ${shop.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                    </div>
+                </div>
+                <div class="o-card-body">
+                    <div class="o-detail"><span class="material-symbols-rounded">location_on</span><span>${shop.city}, ${shop.state}</span></div>
+                    <div class="o-detail"><span class="material-symbols-rounded">home</span><span>${shop.address}</span></div>
+                    <div class="o-detail"><span class="material-symbols-rounded">call</span><span>${shop.phone}</span></div>
+                    <div class="o-detail"><span class="material-symbols-rounded">mail</span><span>${shop.email}</span></div>
+                </div>
+                <div class="o-card-actions">
+                    <button class="o-btn o-btn-primary" onclick="editShop(${shop.id})"><span class="material-symbols-rounded">edit</span> Edit</button>
+                    <button class="o-btn o-btn-outline" onclick="toggleShopStatus(${shop.id})">${shop.isActive ? '<span class="material-symbols-rounded">pause</span> Deactivate' : '<span class="material-symbols-rounded">play_arrow</span> Activate'}</button>
+                    <button class="o-btn o-btn-danger" onclick="deleteShop(${shop.id})"><span class="material-symbols-rounded">delete</span> Delete</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        document.getElementById('shopsList').innerHTML = '<div class="error-state"><span class="material-symbols-rounded">error</span><p>Failed to load shops</p></div>';
         console.error('Error loading shops:', error);
     }
 }
@@ -287,26 +264,11 @@ async function loadMyBookings() {
 
 // ───────── MODALS ─────────
 function showCreateShopModal() {
-    // Re-initialize state/city/area selectors each time modal is opened.
-    if (typeof initLocationDropdowns === 'function') {
-        initLocationDropdowns();
-    }
-    const citySelect = document.getElementById('shopCity');
-    const areaSelect = document.getElementById('shopArea');
-    if (citySelect) citySelect.innerHTML = '<option value="">Select City</option>';
-    if (areaSelect) areaSelect.innerHTML = '<option value="">Select Area</option>';
-
     document.getElementById('createShopModal').classList.add('open');
 }
 function showCreateVehicleModal() {
     const token = localStorage.getItem('token');
     apiCall('/api/owner/shops', 'GET', null, token).then(shops => {
-        if (!Array.isArray(shops) || shops.length === 0) {
-            alert('Please create a shop first before adding vehicles.');
-            showSection('shops', document.querySelector('.side-nav-item'));
-            return;
-        }
-
         const select = document.getElementById('shopSelect');
         select.innerHTML = '<option value="">Select a shop</option>' +
             shops.map(s => `<option value="${s.id}">${s.shopName}</option>`).join('');
@@ -329,14 +291,6 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 // ───────── FORMS ─────────
 document.getElementById('createShopForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert('Please login first');
-        window.location.href = 'login.html';
-        return;
-    }
-
     const formData = new FormData(e.target);
     const area = document.getElementById('shopArea').value;
     const addressText = formData.get('address');
@@ -354,57 +308,15 @@ document.getElementById('createShopForm').addEventListener('submit', async (e) =
         email: formData.get('email')
     };
 
-    const requiredFields = [
-        ['shop name', shop.shopName],
-        ['state', shop.state],
-        ['city', shop.city],
-        ['pincode', shop.pincode],
-        ['phone', shop.phone],
-        ['email', shop.email],
-        ['address', shop.address]
-    ];
-    const missing = requiredFields
-        .filter(([, value]) => !value || !String(value).trim())
-        .map(([name]) => name);
-
-    if (missing.length > 0) {
-        alert('Please fill the following fields: ' + missing.join(', '));
-        return;
-    }
-
-    console.log('Creating shop with data:', shop);
-    
     try {
-        const response = await apiCall('/api/owner/shops', 'POST', shop, token);
-        console.log('Shop created successfully:', response);
-
-        if (response && response.id) {
-            const deduped = (currentShops || []).filter(s => s && s.id !== response.id);
-            renderMyShops([response, ...deduped]);
-        }
-
-        closeModal('createShopModal');
-        if (e.target && typeof e.target.reset === 'function') {
-            e.target.reset();
-        }
-
-        const stateEl = document.getElementById('shopState');
-        const cityEl = document.getElementById('shopCity');
-        const areaEl = document.getElementById('shopArea');
-        if (stateEl) stateEl.innerHTML = '<option value="">Select State</option>';
-        if (cityEl) cityEl.innerHTML = '<option value="">Select City</option>';
-        if (areaEl) areaEl.innerHTML = '<option value="">Select Area</option>';
-
-        try {
-            await loadMyShops();
-        } catch (_) {
-            // Keep optimistic UI even if refresh fails.
-        }
-
+        const token = localStorage.getItem('token');
+        await apiCall('/api/owner/shops', 'POST', shop, token);
         alert('Shop created successfully!');
+        closeModal('createShopModal');
+        e.target.reset();
+        loadMyShops();
     } catch (error) {
-        console.error('Error creating shop:', error);
-        alert('Failed to create shop: ' + (error?.message || 'Unknown error'));
+        alert('Failed to create shop: ' + error.message);
     }
 });
 
@@ -443,12 +355,6 @@ async function uploadVehicleImage(file) {
 document.getElementById('createVehicleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const parsedShopId = parseInt(formData.get('shopId'), 10);
-
-    if (!Number.isInteger(parsedShopId) || parsedShopId <= 0) {
-        alert('Please select a valid shop before adding a vehicle.');
-        return;
-    }
 
     // Upload image first if a file was selected
     let imageUrl = '';
@@ -463,7 +369,7 @@ document.getElementById('createVehicleForm').addEventListener('submit', async (e
     }
 
     const vehicle = {
-        shopId: parsedShopId,
+        shopId: parseInt(formData.get('shopId')),
         vehicleName: formData.get('vehicleName'),
         brand: formData.get('brand'),
         model: formData.get('model'),

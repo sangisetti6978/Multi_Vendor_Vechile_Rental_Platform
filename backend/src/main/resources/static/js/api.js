@@ -1,11 +1,5 @@
-// API Configuration
-// Priority: explicit window override -> localhost dev -> Render production
-const API_BASE_URL =
-    (typeof window !== 'undefined' && window.__API_BASE_URL__) ||
-    (typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'http://localhost:8888'
-        : 'https://vehicle-rental-backend.onrender.com');
+// API Configuration — uses current hostname so it works from any device
+const API_BASE_URL = `http://${window.location.hostname || 'localhost'}:8888`;
 
 // Resolve vehicle image URL — handles server-relative paths, full URLs, and missing images
 function resolveVehicleImg(url, fallbackName) {
@@ -53,14 +47,7 @@ async function apiCall(endpoint, method = 'GET', data = null, token = null) {
                 const error = await response.json();
                 errorMessage = error.message || error.error || errorMessage;
             } catch (e) {
-                try {
-                    const fallbackText = await response.text();
-                    if (fallbackText && fallbackText.trim()) {
-                        errorMessage = fallbackText.trim();
-                    }
-                } catch (_) {
-                    // Ignore body parsing failure and keep default error message
-                }
+                // Response body is not JSON
             }
             throw new Error(errorMessage);
         }

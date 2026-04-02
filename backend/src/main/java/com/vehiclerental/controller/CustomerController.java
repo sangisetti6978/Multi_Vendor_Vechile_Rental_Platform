@@ -1,22 +1,5 @@
 package com.vehiclerental.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vehiclerental.dto.BookingDTO;
 import com.vehiclerental.dto.SearchRequest;
 import com.vehiclerental.dto.VehicleDTO;
@@ -28,10 +11,17 @@ import com.vehiclerental.service.PaymentService;
 import com.vehiclerental.service.ReviewService;
 import com.vehiclerental.service.UserService;
 import com.vehiclerental.service.VehicleService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -110,14 +100,6 @@ public class CustomerController {
         Long customerId = userService.getUserByEmail(email).getId();
         review.setCustomerId(customerId);
         return ResponseEntity.ok(reviewService.createReview(review));
-    }
-
-    @GetMapping("/reviews")
-    @Operation(summary = "Get my reviews", description = "Get all reviews submitted by the current customer")
-    public ResponseEntity<List<Review>> getMyReviews(Authentication auth) {
-        String email = auth.getName();
-        Long customerId = userService.getUserByEmail(email).getId();
-        return ResponseEntity.ok(reviewService.getReviewsByCustomer(customerId));
     }
     
     @GetMapping("/vehicles/{vehicleId}/reviews")

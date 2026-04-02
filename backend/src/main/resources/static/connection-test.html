@@ -71,7 +71,7 @@
     
     <div class="test-card">
         <h2>Configuration</h2>
-        <p><strong>Backend URL:</strong> <span id="backendUrl">Auto-detected (localhost or Render)</span></p>
+        <p><strong>Backend URL:</strong> <span id="backendUrl">http://localhost:8080</span></p>
         <p><strong>Frontend:</strong> Serving from filesystem</p>
     </div>
 
@@ -113,7 +113,7 @@
     <div class="test-card">
         <h2>Troubleshooting Tips</h2>
         <ul>
-            <li>Make sure the backend server is running (locally on <strong>http://localhost:8888</strong> or on Render)</li>
+            <li>Make sure the backend server is running on <strong>http://localhost:8080</strong></li>
             <li>Check that your Oracle database is running and configured correctly</li>
             <li>Verify the CORS configuration in SecurityConfig.java allows your frontend origin</li>
             <li>Check browser console (F12) for any network errors</li>
@@ -131,11 +131,7 @@
             statusDiv.textContent = 'Testing backend connection...';
             
             try {
-                const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-                    ? 'http://localhost:8888'
-                    : 'https://vehicle-rental-backend.onrender.com';
-                document.getElementById('backendUrl').textContent = apiBaseUrl;
-                const response = await fetch(apiBaseUrl + '/api/public/vehicles');
+                const response = await fetch('http://localhost:8080/api/public/vehicles');
                 
                 if (response.ok) {
                     statusDiv.className = 'status success';

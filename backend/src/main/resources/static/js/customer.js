@@ -20,7 +20,7 @@ if (avatarEl && user.fullName) {
 let countdownIntervals = {};
 
 // Show section function
-function showSection(sectionName, trigger) {
+function showSection(sectionName) {
     document.querySelectorAll('[id$="Section"]').forEach(section => {
         section.style.display = 'none';
     });
@@ -30,88 +30,10 @@ function showSection(sectionName, trigger) {
     document.querySelectorAll('.side-nav-item').forEach(link => {
         link.classList.remove('active');
     });
-    if (trigger) {
-        trigger.classList.add('active');
-    }
+    event.target.closest('.side-nav-item').classList.add('active');
     
     if (sectionName === 'bookings') {
         loadMyBookings();
-    } else if (sectionName === 'reviews') {
-        loadMyReviews();
-    }
-}
-
-async function loadMyReviews() {
-    try {
-        const token = localStorage.getItem('token');
-        const reviews = await apiCall('/api/customer/reviews', 'GET', null, token);
-        const container = document.getElementById('reviewsList');
-
-        if (!Array.isArray(reviews) || reviews.length === 0) {
-            container.innerHTML = `
-                <div class="reviews-placeholder">
-                    <span class="material-symbols-rounded" style="font-size:3rem;color:#cbd5e1;">rate_review</span>
-                    <p>No reviews yet. Complete a booking to submit your first review.</p>
-                </div>`;
-            return;
-        }
-
-        const vehicleCache = new Map();
-        async function getVehicleName(vehicleId) {
-            if (!vehicleId) return 'Vehicle';
-            if (vehicleCache.has(vehicleId)) return vehicleCache.get(vehicleId);
-            try {
-                const v = await apiCall(`/api/customer/vehicles/${vehicleId}`, 'GET', null, token);
-                const name = v?.vehicleName || `Vehicle #${vehicleId}`;
-                vehicleCache.set(vehicleId, name);
-                return name;
-            } catch (_) {
-                const fallback = `Vehicle #${vehicleId}`;
-                vehicleCache.set(vehicleId, fallback);
-                return fallback;
-            }
-        }
-
-        const ordered = [...reviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        const viewData = [];
-        for (const r of ordered) {
-            viewData.push({
-                ...r,
-                vehicleName: await getVehicleName(r.vehicleId)
-            });
-        }
-
-        container.innerHTML = `
-            <div class="bookings-list">
-                ${viewData.map(r => `
-                    <div class="bk-card">
-                        <div class="bk-body">
-                            <div class="bk-header">
-                                <div class="bk-vehicle-info">
-                                    <div class="bk-vehicle-icon"><span class="material-symbols-rounded">directions_car</span></div>
-                                    <div>
-                                        <div class="bk-vehicle-name">${r.vehicleName}</div>
-                                        <div class="bk-shop-name"><span class="material-symbols-rounded">star</span>${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-                                    </div>
-                                </div>
-                                <span class="bk-badge b-completed">${new Date(r.createdAt).toLocaleDateString()}</span>
-                            </div>
-                            <div class="bk-notes">
-                                <span class="material-symbols-rounded">rate_review</span>
-                                <div>${r.comment && r.comment.trim() ? r.comment : '<em>No comment</em>'}</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>`;
-    } catch (error) {
-        const container = document.getElementById('reviewsList');
-        container.innerHTML = `
-            <div class="error-state">
-                <span class="material-symbols-rounded">error</span>
-                <p>Failed to load reviews.</p>
-                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Error: ${error.message || 'Unknown error'}</p>
-            </div>`;
     }
 }
 
@@ -383,13 +305,10 @@ async function loadMyBookings() {
         
     } catch (error) {
         document.getElementById('bookingStats').innerHTML = '';
-        const errorMsg = error.message || 'Unknown error occurred';
         document.getElementById('bookingsList').innerHTML = `
             <div class="error-state">
                 <span class="material-symbols-rounded">error</span>
-                <p>Failed to load bookings.</p>
-                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Error: ${errorMsg}</p>
-                <button onclick="location.reload()" style="margin-top: 15px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Retry</button>
+                <p>Failed to load bookings. Please try again.</p>
             </div>`;
         console.error('Error loading bookings:', error);
     }
@@ -434,8 +353,6 @@ async function submitReview(bookingId, vehicleId, rating, comment) {
             comment: comment || ''
         }, token);
         alert('Review submitted successfully!');
-        await loadMyBookings();
-        await loadMyReviews();
     } catch (error) {
         alert('Failed to submit review: ' + error.message);
     }

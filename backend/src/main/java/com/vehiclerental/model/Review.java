@@ -1,19 +1,12 @@
 package com.vehiclerental.model;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reviews")
@@ -39,7 +32,8 @@ public class Review {
     @Column(nullable = false)
     private Integer rating;
     
-    @Column(name = "\"comment\"", columnDefinition = "TEXT")
+    @Lob
+    @Column(name = "\"comment\"")
     private String comment;
     
     @CreationTimestamp

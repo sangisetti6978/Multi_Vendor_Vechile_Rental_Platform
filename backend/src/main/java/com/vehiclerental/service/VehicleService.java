@@ -1,22 +1,20 @@
 package com.vehiclerental.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.vehiclerental.dto.SearchRequest;
 import com.vehiclerental.dto.VehicleDTO;
-import com.vehiclerental.exception.ResourceNotFoundException;
 import com.vehiclerental.model.Shop;
-import com.vehiclerental.model.User;
 import com.vehiclerental.model.Vehicle;
-import com.vehiclerental.repository.ReviewRepository;
+import com.vehiclerental.model.User;
 import com.vehiclerental.repository.ShopRepository;
 import com.vehiclerental.repository.UserRepository;
 import com.vehiclerental.repository.VehicleRepository;
+import com.vehiclerental.repository.ReviewRepository;
+import com.vehiclerental.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VehicleService {
@@ -37,26 +35,22 @@ public class VehicleService {
         return vehicleRepository.save(vehicle);
     }
     
-    @Transactional(readOnly = true)
     public Vehicle getVehicleById(Long id) {
         return vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
     }
     
-    @Transactional(readOnly = true)
     public VehicleDTO getVehicleDTOById(Long id) {
         Vehicle vehicle = getVehicleById(id);
         return convertToDTO(vehicle);
     }
     
-    @Transactional(readOnly = true)
     public List<VehicleDTO> getAllVehicles() {
         return vehicleRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     
-    @Transactional(readOnly = true)
     public List<VehicleDTO> getVehiclesByShop(Long shopId) {
         return vehicleRepository.findByShopId(shopId).stream()
                 .map(this::convertToDTO)
