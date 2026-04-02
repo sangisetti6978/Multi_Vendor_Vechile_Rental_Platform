@@ -5,10 +5,12 @@ import com.vehiclerental.repository.ShopRepository;
 import com.vehiclerental.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ShopService {
     
     @Autowired
@@ -18,19 +20,23 @@ public class ShopService {
         return shopRepository.save(shop);
     }
     
+    @Transactional(readOnly = true)
     public Shop getShopById(Long id) {
         return shopRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shop not found with id: " + id));
     }
     
+    @Transactional(readOnly = true)
     public List<Shop> getAllShops() {
         return shopRepository.findAll();
     }
     
+    @Transactional(readOnly = true)
     public List<Shop> getShopsByOwner(Long ownerId) {
         return shopRepository.findByOwnerId(ownerId);
     }
     
+    @Transactional(readOnly = true)
     public List<Shop> getShopsByCity(String city) {
         return shopRepository.findByCity(city);
     }
