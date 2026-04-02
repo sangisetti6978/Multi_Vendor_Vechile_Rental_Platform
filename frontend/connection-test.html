@@ -133,7 +133,7 @@
             try {
                 const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
                     ? 'http://localhost:8888'
-                    : 'https://vehicle-rental-backend.onrender.com';
+                    : 'https://vehicle-rental-backend-460f.onrender.com';
                 document.getElementById('backendUrl').textContent = apiBaseUrl;
                 const response = await fetch(apiBaseUrl + '/api/public/vehicles');
                 
