@@ -1,11 +1,18 @@
 // API Configuration
-// Priority: explicit window override -> localhost dev -> Render production
+// Priority: explicit window override -> local development (localhost/file://) -> Render production
+const isLocalFrontend =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.protocol === 'file:');
+
 const API_BASE_URL =
     (typeof window !== 'undefined' && window.__API_BASE_URL__) ||
-    (typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    (isLocalFrontend
         ? 'http://localhost:8888'
         : 'https://vehicle-rental-backend-460f.onrender.com');
+
+const API_TIMEOUT_MS = 20000;
 
 // Resolve vehicle image URL — handles server-relative paths, full URLs, and missing images
 function resolveVehicleImg(url, fallbackName) {
@@ -23,9 +30,13 @@ async function apiCall(endpoint, method = 'GET', data = null, token = null) {
         headers['Authorization'] = `Bearer ${token}`;
     }
     
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
     const config = {
         method,
-        headers
+        headers,
+        signal: controller.signal
     };
     
     if (data && (method === 'POST' || method === 'PUT')) {
@@ -70,12 +81,17 @@ async function apiCall(endpoint, method = 'GET', data = null, token = null) {
         if (!text) return null;
         return JSON.parse(text);
     } catch (error) {
+        if (error.name === 'AbortError') {
+            throw new Error('Request timed out. Please make sure backend is running and try again.');
+        }
         if (error.message === 'Failed to fetch') {
             console.error('Network error — is the backend running on ' + API_BASE_URL + '?');
             throw new Error('Cannot connect to server. Please check if the backend is running.');
         }
         console.error('API call error:', error);
         throw error;
+    } finally {
+        clearTimeout(timeoutId);
     }
 }
 

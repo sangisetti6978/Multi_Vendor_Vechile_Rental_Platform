@@ -17,6 +17,13 @@ services:
         sync: false
       - key: MAIL_PASSWORD
         sync: false
+      - key: UPLOAD_DIR
+        value: /app/uploads
+        sync: false
+    disk:
+      name: uploads
+      mountPath: /app/uploads
+      sizeGB: 10
 
   - type: static_site
     name: vehicle-rental-frontend

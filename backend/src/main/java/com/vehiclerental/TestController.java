@@ -1,4 +1,4 @@
-package com.vehiclerental.test;
+package com.vehiclerental;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

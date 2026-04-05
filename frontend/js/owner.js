@@ -398,9 +398,29 @@ document.getElementById('createShopForm').addEventListener('submit', async (e) =
         return;
     }
 
+    // Check and upload license photo
+    const licenseFile = document.getElementById('shopLicenseFile');
+    if (!licenseFile.files || !licenseFile.files[0]) {
+        alert('Please upload a shop license photo before creating the shop.');
+        return;
+    }
+
     console.log('Creating shop with data:', shop);
     
     try {
+        // Upload license photo first
+        let licensePhotoUrl = '';
+        try {
+            licensePhotoUrl = await uploadShopLicense(licenseFile.files[0]);
+            console.log('License photo uploaded:', licensePhotoUrl);
+        } catch (err) {
+            alert('License photo upload failed: ' + err.message);
+            return;
+        }
+
+        // Add license photo URL to shop data
+        shop.licensePhotoUrl = licensePhotoUrl;
+
         const response = await apiCall('/api/owner/shops', 'POST', shop, token);
         console.log('Shop created successfully:', response);
 
@@ -420,6 +440,10 @@ document.getElementById('createShopForm').addEventListener('submit', async (e) =
         if (stateEl) stateEl.innerHTML = '<option value="">Select State</option>';
         if (cityEl) cityEl.innerHTML = '<option value="">Select City</option>';
         if (areaEl) areaEl.innerHTML = '<option value="">Select Area</option>';
+
+        // Reset license photo preview
+        document.getElementById('licenseImgPreview').style.display = 'none';
+        document.getElementById('licenseImgPlaceholder').style.display = '';
 
         try {
             await loadMyShops();
@@ -452,6 +476,23 @@ function previewVehicleImage(input) {
     }
 }
 
+function previewLicenseImage(input) {
+    const preview = document.getElementById('licenseImgPreview');
+    const placeholder = document.getElementById('licenseImgPlaceholder');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+        placeholder.style.display = '';
+    }
+}
+
 async function uploadVehicleImage(file) {
     const token = localStorage.getItem('token');
     const formData = new FormData();
@@ -464,6 +505,20 @@ async function uploadVehicleImage(file) {
     if (!resp.ok) throw new Error('Image upload failed');
     const data = await resp.json();
     return data.imageUrl; // e.g. /uploads/vehicles/uuid.jpg
+}
+
+async function uploadShopLicense(file) {
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
+    formData.append('file', file);
+    const resp = await fetch(API_BASE_URL + '/api/upload/shop-license', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: formData
+    });
+    if (!resp.ok) throw new Error('License photo upload failed');
+    const data = await resp.json();
+    return data.imageUrl; // e.g. /uploads/licenses/uuid.jpg
 }
 
 document.getElementById('createVehicleForm').addEventListener('submit', async (e) => {

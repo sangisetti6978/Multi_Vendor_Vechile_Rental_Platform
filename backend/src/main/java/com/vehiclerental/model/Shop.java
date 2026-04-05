@@ -45,6 +45,9 @@ public class Shop {
     
     private String email;
     
+    @Column(name = "license_photo_url", columnDefinition = "TEXT")
+    private String licensePhotoUrl;
+    
     @Column(name = "is_active")
     private Boolean isActive = true;
     
@@ -60,7 +63,7 @@ public class Shop {
     }
 
     public Shop(Long id, Long ownerId, String shopName, String description, String address, String area, String city,
-                String state, String pincode, String phone, String email, Boolean isActive,
+                String state, String pincode, String phone, String email, String licensePhotoUrl, Boolean isActive,
                 LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.ownerId = ownerId;
@@ -73,6 +76,7 @@ public class Shop {
         this.pincode = pincode;
         this.phone = phone;
         this.email = email;
+        this.licensePhotoUrl = licensePhotoUrl;
         this.isActive = isActive;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -164,6 +168,14 @@ public class Shop {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getLicensePhotoUrl() {
+        return licensePhotoUrl;
+    }
+
+    public void setLicensePhotoUrl(String licensePhotoUrl) {
+        this.licensePhotoUrl = licensePhotoUrl;
     }
 
     public Boolean getIsActive() {

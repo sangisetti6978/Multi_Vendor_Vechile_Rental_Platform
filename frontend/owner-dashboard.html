@@ -181,6 +181,18 @@
                         <label><span class="material-symbols-rounded">mail</span> Email</label>
                         <input type="email" name="email" placeholder="Shop email" required>
                     </div>
+                     <div class="form-field full-width">
+                        <label><span class="material-symbols-rounded">image</span> Shop License Photo <span style="color: red;">*</span></label>
+                        <div class="img-upload-area" id="licenseImgUpload">
+                            <input type="file" id="shopLicenseFile" accept="image/*" onchange="previewLicenseImage(this)" required>
+                            <div class="img-upload-placeholder" id="licenseImgPlaceholder">
+                                <span class="material-symbols-rounded">cloud_upload</span>
+                                <p>Click or drag to upload license photo</p>
+                                <small>JPG, PNG, WEBP — max 10 MB</small>
+                            </div>
+                            <img id="licenseImgPreview" class="img-upload-preview" style="display:none;" alt="preview">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="modal-btn modal-btn-cancel" onclick="closeModal('createShopModal')">Cancel</button>
