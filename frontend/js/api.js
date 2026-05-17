@@ -1,5 +1,5 @@
 // API Configuration
-// Priority: explicit window override -> local development (localhost/file://) -> Render production
+// Priority: explicit window override -> local development (localhost/file://) -> Render production (same origin)
 const isLocalFrontend =
     typeof window !== 'undefined' &&
     (window.location.hostname === 'localhost' ||
@@ -10,7 +10,7 @@ const API_BASE_URL =
     (typeof window !== 'undefined' && window.__API_BASE_URL__) ||
     (isLocalFrontend
         ? 'http://localhost:8888'
-        : 'https://vehicle-rental-backend-460f.onrender.com');
+        : window.location.origin);
 
 const API_TIMEOUT_MS = 20000;
 
